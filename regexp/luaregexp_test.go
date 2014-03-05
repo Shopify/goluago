@@ -13,10 +13,7 @@ func TestLuaRegexp(t *testing.T) {
 	regexp.Open(l)
 
 	failHook := func(l *lua.State) int {
-		str, ok := lua.ToString(l, -1)
-		if !ok {
-			t.Fatalf("need a string on the lua stack for calls to fail()")
-		}
+		str := lua.CheckString(l, -1)
 		lua.Pop(l, 1)
 		t.Error(str)
 		return 0
