@@ -54,7 +54,7 @@ notequals("...sanity check: math.pi not equals to 1", 1, math.pi)
 equals("...sanity check: math.pi equals itself", math.pi, 3.1415926535897932384626433832795)
 
 -- All the following should work
-require("regexp")
+-- require("regexp")
 
 -- quotemeta
 equals("quotemeta: example", "\\[foo\\]", regexp.quotemeta("[foo]"))

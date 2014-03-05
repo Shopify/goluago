@@ -1,22 +1,16 @@
-package regexp
+package regexp_test
 
 import (
 	"github.com/Shopify/go-lua"
-	"io/ioutil"
+	"github.com/Shopify/goluago/regexp"
 	"testing"
 )
 
 func TestLuaRegexp(t *testing.T) {
-	data, err := ioutil.ReadFile("testdata/regexptest.lua")
-	if err != nil {
-		t.Fatalf("reading lua test script, %v", err)
-	}
-	testScript := string(data)
-
 	l := lua.NewState()
 
 	lua.OpenLibraries(l)
-	Register(l)
+	regexp.Open(l)
 
 	failHook := func(l *lua.State) int {
 		str, ok := lua.ToString(l, -1)
@@ -30,7 +24,7 @@ func TestLuaRegexp(t *testing.T) {
 	lua.Register(l, "fail", failHook)
 	wantTop := lua.Top(l)
 
-	if err := lua.LoadString(l, testScript); err != nil {
+	if err := lua.LoadFile(l, "testdata/regexptest.lua", "t"); err != nil {
 		t.Fatalf("loading lua test script in VM, %v", err)
 	}
 
