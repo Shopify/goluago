@@ -1,6 +1,4 @@
 -- Helper
-
-
 function istrue(name, cond)
   if not cond then
     print("[FAIL!]\t"..name)
@@ -49,28 +47,28 @@ equals("...sanity check: string equality", "hello", "hello")
 notequals("...sanity check: string inequality", "hello", "bye")
 equals("...sanity check: real equality", 1.0/3.0, 1.0/3.0)
 notequals("...sanity check: real inequality", 1.0/3.0, 1.0/6.0)
-require("math") -- can include
-notequals("...sanity check: math.pi not equals to 1", 1, math.pi)
-equals("...sanity check: math.pi equals itself", math.pi, 3.1415926535897932384626433832795)
+local mathy = require("math") -- can include
+notequals("...sanity check: mathy.pi not equals to 1", 1, mathy.pi)
+equals("...sanity check: mathy.pi equals itself", mathy.pi, 3.1415926535897932384626433832795)
 
 -- All the following should work
--- require("regexp")
+local re = require("goluago/regexp")
 
 -- quotemeta
-equals("quotemeta: example", "\\[foo\\]", regexp.quotemeta("[foo]"))
+equals("quotemeta: example", "\\[foo\\]", re.quotemeta("[foo]"))
 
 -- match/matchstring
-istrue("match: foo in seafood", regexp.match("foo.*", "seafood"))
-isfalse("match: bar is not in seafood", regexp.match("bar.*", "seafood"))
+istrue("match: foo in seafood", re.match("foo.*", "seafood"))
+isfalse("match: bar is not in seafood", re.match("bar.*", "seafood"))
 
-local matched, err = pcall(function() regexp.match("a(b", "seafood") end)
+local matched, err = pcall(function() re.match("a(b", "seafood") end)
 isfalse("match: bad regexp syntax - matched is false", matched)
 equals("match: bad regexp syntax - got an error message", "error parsing regexp: missing closing ): `a(b`", err)
 
-local matched, err = pcall(function() regexp.match({}, "seafood") end)
+local matched, err = pcall(function() re.match({}, "seafood") end)
 isfalse("match: first arg not string - matched is false", matched)
 equals("match: first arg not string - got an error message", "match: 1st arg (pattern) must be a string", err)
 
-local matched, err = pcall(function() regexp.match("foo", {}) end)
+local matched, err = pcall(function() re.match("foo", {}) end)
 isfalse("match: second arg not string - matched is false", matched)
 equals("match: second arg not string - got an error message", "match: 2nd arg (s) must be a string", err)

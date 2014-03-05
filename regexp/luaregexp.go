@@ -5,14 +5,14 @@ import (
 	"regexp"
 )
 
-// Open makes the regexp functions available to Lua code in the `regexp`
-// namespace, once Lua code invokes `require('regexp')`.
+// Open exposes the regexp functions to Lua code in the `goluago/regexp`
+// namespace.
 func Open(l *lua.State) {
 	reOpen := func(l *lua.State) int {
 		lua.NewLibrary(l, regexpLibrary)
 		return 1
 	}
-	lua.Require(l, "regexp", reOpen, true)
+	lua.Require(l, "goluago/regexp", reOpen, false)
 	lua.Pop(l, 1)
 }
 
