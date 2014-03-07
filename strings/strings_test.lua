@@ -102,7 +102,5 @@ equals("trim: multiple white space surrounds", "loll", strings.trim(" \t\n \t\tl
 -- join
 local want = {"cat", "dog", "elephant", "walrus"}
 local got = strings.split("cat,dog,elephant,walrus", ",")
-print("Want:", tblString(want))
-print("Got:", tblString(got))
 equals("join: comma separated list", want, got)
 equals("join: comma separated list with extra comma", {"", "cat", "dog", "elephant", "walrus",""}, strings.split(",cat,dog,elephant,walrus,", ","))
