@@ -1,20 +1,20 @@
-package json_test
+package strings_test
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/encoding/json"
 	"github.com/Shopify/goluago/luatest"
+	"github.com/Shopify/goluago/strings"
 	"io/ioutil"
 	"testing"
 )
 
-func TestLuaJSON(t *testing.T) {
+func TestLuaStrings(t *testing.T) {
 	l := lua.NewState()
 
 	lua.OpenLibraries(l)
-	json.Open(l)
+	strings.Open(l)
 
-	data, err := ioutil.ReadFile("json_test.lua")
+	data, err := ioutil.ReadFile("strings_test.lua")
 	if err != nil {
 		t.Fatalf("loading test file, %v", err)
 	}

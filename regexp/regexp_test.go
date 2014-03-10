@@ -1,20 +1,20 @@
-package json_test
+package regexp_test
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/encoding/json"
 	"github.com/Shopify/goluago/luatest"
+	"github.com/Shopify/goluago/regexp"
 	"io/ioutil"
 	"testing"
 )
 
-func TestLuaJSON(t *testing.T) {
+func TestLuaRegexp(t *testing.T) {
 	l := lua.NewState()
 
 	lua.OpenLibraries(l)
-	json.Open(l)
+	regexp.Open(l)
 
-	data, err := ioutil.ReadFile("json_test.lua")
+	data, err := ioutil.ReadFile("regexp_test.lua")
 	if err != nil {
 		t.Fatalf("loading test file, %v", err)
 	}
