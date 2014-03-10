@@ -55,27 +55,29 @@ function notequals(name, dontwant, got)
   end
 end
 
-function tblEquals(tbl1, tbl2)
-  local count = 0
-  for k, v in pairs(tbl1) do
-    count = count+1
-    if (tbl2[k] ~= v) then return false end
-  end
-  for k, v in pairs(tbl2) do
-    count = count-1
-    if (tbl1[k] ~= v) then return false end
-  end
-  return count == 0
-end
 
 function tblString(tbl)
   local str = "{"
   for k, v in pairs(tbl) do
-    str = str..k..":"..v..","
+    if type(v) == "table" then
+      str = str..k..":"..tblString(v)..","
+    elseif type(v) == "boolean" then
+      if v then
+        str = str..k..":true,"
+      else
+        str = str..k..":false,"
+      end
+    else
+      str = str..k..":"..v..","
+    end
   end
   return str.."}"
 end
 
+function tblEquals(tbl1, tbl2)
+  -- lazy but less duplication of code
+  return tblString(tbl1) == tblString(tbl2)
+end
 
 istrue("...sanity check: true is true", true)
 equals("...sanity check: boolean equality", true, 1==1)
@@ -91,20 +93,64 @@ notequals("...sanity check: mathy.pi not equals to 1", 1, mathy.pi)
 equals("...sanity check: mathy.pi equals itself", mathy.pi, 3.1415926535897932384626433832795)
 
 -- All the following should work
-local strings = require("goluago/strings")
+local json = require("goluago/encoding/json")
 
--- trim
-equals("trim: extra space before", "loll", strings.trim(" loll"))
-equals("trim: extra space after", "loll", strings.trim("loll "))
-equals("trim: extra space surrounds", "loll", strings.trim(" loll "))
-equals("trim: multiple white space surrounds", "loll", strings.trim(" \t\n \t\tloll \t\t \n \n\t  "))
+equals("unmarshall: can decode empty object", {}, json.unmarshall("{}"))
+equals("unmarshall: can decode empty array", {}, json.unmarshall("[]"))
+equals("unmarshall: can decode null", nil, json.unmarshall("null"))
+equals("unmarshall: can decode array with null", {}, json.unmarshall("[null]"))
 
--- join
-local want = {"cat", "dog", "elephant", "walrus"}
-local got = strings.split("cat,dog,elephant,walrus", ",")
-equals("join: comma separated list", want, got)
-equals("join: comma separated list with extra comma", {"", "cat", "dog", "elephant", "walrus",""}, strings.split(",cat,dog,elephant,walrus,", ","))
+local payload = [=[
+{
+  "key1":1,
+  "key2":"val2",
+  "key3":["arrKey", 2, true, false, {}, []],
+  "key4": {
+    "subkey1":1,
+    "subkey2":"val2",
+    "subkey3":["arrKey", 2, true, false, {}, []],
+    "subkey4": {
+      "subsubkey1":1,
+      "subsubkey2":"val2",
+      "subsubkey3":["arrKey", 2, true, false, {}, []]
+    }
+  },
+  "key5": null,
+  "key6": [1, null, 2, null]
+}
+]=]
 
--- replace
-equals("replace: 2 times", "oinky oinky oink", strings.replace("oink oink oink", "k", "ky", 2))
-equals("replace: all the times", "moo moo moo", strings.replace("oink oink oink", "oink", "moo", -1))
+
+local want = {}
+want["key1"]=1
+want["key2"]="val2"
+want["key3"]={"arrKey", 2, true, false, {}, {}}
+want["key4"]={}
+want["key4"]["subkey1"]=1
+want["key4"]["subkey2"]="val2"
+want["key4"]["subkey3"]={"arrKey", 2, true, false, {}, {}}
+want["key4"]["subkey4"]={}
+want["key4"]["subkey4"]["subsubkey1"]=1
+want["key4"]["subkey4"]["subsubkey2"]="val2"
+want["key4"]["subkey4"]["subsubkey3"]={"arrKey", 2, true, false, {}, {}}
+want["key5"]=nil
+want["key6"]={1, nil, 2, nil}
+
+local got = json.unmarshall(payload)
+
+equals("unmarshall: can decode sample JSON", want, got)
+
+local trailingComma = [=[
+{
+  "i have": "i trailing comma",
+}
+]=]
+
+local wantErr = "invalid character '}' looking for beginning of object key string"
+
+local got, gotErr = pcall(function ()
+  return json.unmarshall(trailingComma)
+end)
+
+equals("unmarshall: invalid JSON throws an error", wantErr, gotErr)
+isfalse("unmarshall: invalid JSON decodes a nil value", got)

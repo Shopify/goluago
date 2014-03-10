@@ -17,6 +17,7 @@ func Open(l *lua.State) {
 var regexpLibrary = []lua.RegistryFunction{
 	{"split", split},
 	{"trim", trim},
+	{"replace", replace},
 }
 
 func split(l *lua.State) int {
@@ -48,5 +49,31 @@ func trim(l *lua.State) int {
 		panic("unreachable")
 	}
 	lua.PushString(l, strings.TrimSpace(str))
+	return 1
+}
+
+func replace(l *lua.State) int {
+	s, ok := lua.ToString(l, -4)
+	if !ok {
+		lua.Errorf(l, "replace: 1st argument (source) must be a string")
+		panic("unreachable")
+	}
+	old, ok := lua.ToString(l, -3)
+	if !ok {
+		lua.Errorf(l, "replace: 2nd argument (old) must be a string")
+		panic("unreachable")
+	}
+	new, ok := lua.ToString(l, -2)
+	if !ok {
+		lua.Errorf(l, "replace: 3rd argument (new) must be a string")
+		panic("unreachable")
+	}
+	n, ok := lua.ToInteger(l, -1)
+	if !ok {
+		lua.Errorf(l, "replace: 4th argument (n) must be an integer")
+		panic("unreachable")
+	}
+
+	lua.PushString(l, strings.Replace(s, old, new, n))
 	return 1
 }
