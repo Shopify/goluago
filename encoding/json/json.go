@@ -38,7 +38,7 @@ func unmarshall(l *lua.State) int {
 
 	var recurseOnMap func(map[string]interface{}, int)
 
-	forwardCall := func(val interface{}, depth int) {
+	forwardOnType := func(val interface{}, depth int) {
 
 		switch val.(type) {
 		case nil:
@@ -80,7 +80,7 @@ func unmarshall(l *lua.State) int {
 		for key, val := range input {
 			lua.PushString(l, key)
 			// -1: key, -2: table
-			forwardCall(val, depth)
+			forwardOnType(val, depth)
 			// -1: something, -2: key, -3: table
 			lua.RawSet(l, -3)
 		}
@@ -89,13 +89,13 @@ func unmarshall(l *lua.State) int {
 	recurseOnArray = func(input []interface{}, depth int) {
 		// -1 is a table
 		for i, val := range input {
-			forwardCall(val, depth)
+			forwardOnType(val, depth)
 			// -1: something, -2: table
 			lua.RawSetInt(l, -2, i+1)
 		}
 	}
 
-	forwardCall(output, 0)
+	forwardOnType(output, 0)
 
 	return 1
 }
