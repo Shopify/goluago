@@ -28,5 +28,5 @@ func unmarshal(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
-	return utils.DeepPush(l, &output)
+	return utils.DeepPush(l, output)
 }
