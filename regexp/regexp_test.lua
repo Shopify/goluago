@@ -13,8 +13,8 @@ equals("match: bad regexp syntax - got an error message", "error parsing regexp:
 
 local matched, err = pcall(function() re.match({}, "seafood") end)
 isfalse("match: first arg not string - matched is false", matched)
-equals("match: first arg not string - got an error message", "match: 1st arg (pattern) must be a string", err)
+equals("match: first arg not string - got an error message", "bad argument #1 to '?' (string expected, got table)", err)
 
 local matched, err = pcall(function() re.match("foo", {}) end)
 isfalse("match: second arg not string - matched is false", matched)
-equals("match: second arg not string - got an error message", "match: 2nd arg (s) must be a string", err)
+equals("match: second arg not string - got an error message", "bad argument #2 to '?' (string expected, got table)", err)

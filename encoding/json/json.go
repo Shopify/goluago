@@ -20,13 +20,9 @@ var jsonLibrary = []lua.RegistryFunction{
 }
 
 func unmarshal(l *lua.State) int {
-	payload, ok := lua.ToString(l, -1)
-	if !ok {
-		lua.Errorf(l, "unmarshal: argument must be a string")
-		panic("unreachable")
-	}
+	payload := lua.CheckString(l, 1)
 
-	var output interface{} //make(map[string]interface{})
+	var output interface{}
 
 	if err := json.Unmarshal([]byte(payload), &output); err != nil {
 		lua.Errorf(l, err.Error())

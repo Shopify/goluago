@@ -21,18 +21,11 @@ var stringLibrary = []lua.RegistryFunction{
 }
 
 func split(l *lua.State) int {
-	str, ok := lua.ToString(l, -2)
-	if !ok {
-		lua.Errorf(l, "split: 1st argument (to split) must be a string")
-		panic("unreachable")
-	}
-	sep, ok := lua.ToString(l, -1)
-	if !ok {
-		lua.Errorf(l, "split: 2nd argument (separator) must be a string")
-		panic("unreachable")
-	}
+	str := lua.CheckString(l, 1)
+	sep := lua.CheckString(l, 2)
 
 	strArr := strings.Split(str, sep)
+
 	lua.CreateTable(l, len(strArr), 0)
 	for i, strVal := range strArr {
 		lua.PushString(l, strVal)
@@ -43,36 +36,16 @@ func split(l *lua.State) int {
 }
 
 func trim(l *lua.State) int {
-	str, ok := lua.ToString(l, -1)
-	if !ok {
-		lua.Errorf(l, "trim: must have a string argument")
-		panic("unreachable")
-	}
+	str := lua.CheckString(l, 1)
 	lua.PushString(l, strings.TrimSpace(str))
 	return 1
 }
 
 func replace(l *lua.State) int {
-	s, ok := lua.ToString(l, -4)
-	if !ok {
-		lua.Errorf(l, "replace: 1st argument (source) must be a string")
-		panic("unreachable")
-	}
-	old, ok := lua.ToString(l, -3)
-	if !ok {
-		lua.Errorf(l, "replace: 2nd argument (old) must be a string")
-		panic("unreachable")
-	}
-	new, ok := lua.ToString(l, -2)
-	if !ok {
-		lua.Errorf(l, "replace: 3rd argument (new) must be a string")
-		panic("unreachable")
-	}
-	n, ok := lua.ToInteger(l, -1)
-	if !ok {
-		lua.Errorf(l, "replace: 4th argument (n) must be an integer")
-		panic("unreachable")
-	}
+	s := lua.CheckString(l, 1)
+	old := lua.CheckString(l, 2)
+	new := lua.CheckString(l, 3)
+	n := lua.CheckInteger(l, 4)
 
 	lua.PushString(l, strings.Replace(s, old, new, n))
 	return 1

@@ -21,14 +21,8 @@ var timeLibrary = []lua.RegistryFunction{
 }
 
 func sleep(l *lua.State) int {
-	ns, ok := lua.ToInteger(l, -1)
-	if !ok {
-		lua.Errorf(l, "sleep: argument (nanosec) must be an integer")
-		panic("unreachable")
-	}
-
+	ns := lua.CheckInteger(l, 1)
 	time.Sleep(time.Nanosecond * time.Duration(ns))
-
 	return 1
 }
 
@@ -38,14 +32,8 @@ func now(l *lua.State) int {
 }
 
 func since(l *lua.State) int {
-	start, ok := lua.ToInteger(l, -1)
-	if !ok {
-		lua.Errorf(l, "since: argument (nanosec) must be an integer")
-		panic("unreachable")
-	}
-
+	start := lua.CheckInteger(l, 1)
 	diff := int(time.Now().UnixNano()) - start
-
 	lua.PushInteger(l, diff)
 	return 1
 }
