@@ -22,33 +22,24 @@ var regexpLibrary = []lua.RegistryFunction{
 }
 
 func match(l *lua.State) int {
-	pattern, ok := lua.ToString(l, -2)
-	if !ok {
-		lua.Errorf(l, "match: 1st arg (pattern) must be a string")
-		panic("unreachable")
-	}
-	bStr, ok := lua.ToString(l, -1)
-	if !ok {
-		lua.Errorf(l, "match: 2nd arg (s) must be a string")
-		panic("unreachable")
-	}
+	pattern := lua.CheckString(l, 1)
+	s := lua.CheckString(l, 2)
 
-	matched, err := regexp.MatchString(pattern, bStr)
+	matched, err := regexp.MatchString(pattern, s)
 	if err != nil {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
+
 	lua.PushBoolean(l, matched)
 	return 1
 }
 
 func quoteMeta(l *lua.State) int {
-	s, ok := lua.ToString(l, -1)
-	if !ok {
-		lua.Errorf(l, "quotemeta: argument must be a string")
-		panic("unreachable")
-	}
+	s := lua.CheckString(l, 1)
+
 	quoted := regexp.QuoteMeta(s)
+
 	lua.PushString(l, quoted)
 	return 1
 }
