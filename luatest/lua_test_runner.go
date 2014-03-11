@@ -78,7 +78,7 @@ func isNotEqual(t *testing.T) lua.Function {
 		got := lua.ToValue(l, 3)
 
 		if reflect.DeepEqual(want, got) {
-			t.Errorf("%s: dont want `%#v` but got it (%#v)", name, want, got)
+			t.Errorf("%s: dont want `%#v` but got it", name, want)
 		}
 
 		return 0
