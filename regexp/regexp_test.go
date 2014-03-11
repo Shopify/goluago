@@ -4,7 +4,6 @@ import (
 	"github.com/Shopify/go-lua"
 	"github.com/Shopify/goluago/luatest"
 	"github.com/Shopify/goluago/regexp"
-	"io/ioutil"
 	"testing"
 )
 
@@ -13,11 +12,5 @@ func TestLuaRegexp(t *testing.T) {
 
 	lua.OpenLibraries(l)
 	regexp.Open(l)
-
-	data, err := ioutil.ReadFile("regexp_test.lua")
-	if err != nil {
-		t.Fatalf("loading test file, %v", err)
-	}
-
-	luatest.RunLuaTests(t, l, string(data))
+	luatest.RunLuaTests(t, l, "regexp_test.lua")
 }

@@ -5,11 +5,11 @@ import (
 	"testing"
 )
 
-func RunLuaTests(t *testing.T, l *lua.State, program string) {
+func RunLuaTests(t *testing.T, l *lua.State, filename string) {
 
 	// Register the test hook
 	failHook := func(l *lua.State) int {
-		str := lua.CheckString(l, -1)
+		str := lua.CheckString(l, 1)
 		t.Error(str)
 		return 0
 	}
@@ -27,7 +27,7 @@ func RunLuaTests(t *testing.T, l *lua.State, program string) {
 	// Load and exec the test program
 	wantTop := lua.Top(l)
 
-	if err := lua.LoadString(l, program); err != nil {
+	if err := lua.LoadFile(l, filename, ""); err != nil {
 		t.Fatalf("loading lua test script in VM, %v", err)
 	}
 
@@ -123,16 +123,16 @@ function tblEquals(tbl1, tbl2)
   return tblString(tbl1) == tblString(tbl2)
 end
 
-istrue("...sanity check: true is true", true)
-equals("...sanity check: boolean equality", true, 1==1)
-notequals("...sanity check: boolean inequality", false, 1==1)
-equals("...sanity check: integer equality", 1, 1)
-notequals("...sanity check: integer inequality", 1, 2)
-equals("...sanity check: string equality", "hello", "hello")
-notequals("...sanity check: string inequality", "hello", "bye")
-equals("...sanity check: real equality", 1.0/3.0, 1.0/3.0)
-notequals("...sanity check: real inequality", 1.0/3.0, 1.0/6.0)
-local mathy = require("math") -- can include
-notequals("...sanity check: mathy.pi not equals to 1", 1, mathy.pi)
-equals("...sanity check: mathy.pi equals itself", mathy.pi, 3.1415926535897932384626433832795)
+-- istrue("...sanity check: true is true", true)
+-- equals("...sanity check: boolean equality", true, 1==1)
+-- notequals("...sanity check: boolean inequality", false, 1==1)
+-- equals("...sanity check: integer equality", 1, 1)
+-- notequals("...sanity check: integer inequality", 1, 2)
+-- equals("...sanity check: string equality", "hello", "hello")
+-- notequals("...sanity check: string inequality", "hello", "bye")
+-- equals("...sanity check: real equality", 1.0/3.0, 1.0/3.0)
+-- notequals("...sanity check: real inequality", 1.0/3.0, 1.0/6.0)
+-- local mathy = require("math") -- can include
+-- notequals("...sanity check: mathy.pi not equals to 1", 1, mathy.pi)
+-- equals("...sanity check: mathy.pi equals itself", mathy.pi, 3.1415926535897932384626433832795)
 `
