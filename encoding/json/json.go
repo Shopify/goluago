@@ -46,31 +46,31 @@ func unmarshal(l *lua.State) int {
 			lua.PushString(l, val)
 
 		case uint8:
-			lua.PushUnsigned(l, uint(val))
+			lua.PushNumber(l, float64(val))
 		case uint16:
-			lua.PushUnsigned(l, uint(val))
+			lua.PushNumber(l, float64(val))
 		case uint32:
-			lua.PushUnsigned(l, uint(val))
+			lua.PushNumber(l, float64(val))
 		case uint64:
-			lua.PushUnsigned(l, uint(val))
+			lua.PushNumber(l, float64(val))
 		case uint:
-			lua.PushUnsigned(l, val)
+			lua.PushNumber(l, float64(val))
 
 		case int8:
-			lua.PushInteger(l, int(val))
+			lua.PushNumber(l, float64(val))
 		case int16:
-			lua.PushInteger(l, int(val))
+			lua.PushNumber(l, float64(val))
 		case int32:
-			lua.PushInteger(l, int(val))
+			lua.PushNumber(l, float64(val))
 		case int64:
-			lua.PushInteger(l, int(val))
+			lua.PushNumber(l, float64(val))
 		case int:
-			lua.PushInteger(l, val)
+			lua.PushNumber(l, float64(val))
 
 		case float32:
 			lua.PushNumber(l, float64(val))
 		case float64:
-			lua.PushNumber(l, float64(val))
+			lua.PushNumber(l, val)
 
 		case []interface{}:
 			lua.CreateTable(l, len(val), 0)
