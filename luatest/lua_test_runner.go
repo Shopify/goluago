@@ -51,7 +51,7 @@ func isFalse(t *testing.T) lua.Function {
 		cond := lua.ToBoolean(l, 2)
 
 		if cond {
-			t.Errorf("%s: condition should be true", name)
+			t.Errorf("%s: condition should be false", name)
 		}
 
 		return 0
