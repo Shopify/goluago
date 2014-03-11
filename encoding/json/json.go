@@ -16,13 +16,13 @@ func Open(l *lua.State) {
 }
 
 var regexpLibrary = []lua.RegistryFunction{
-	{"unmarshall", unmarshall},
+	{"unmarshal", unmarshal},
 }
 
-func unmarshall(l *lua.State) int {
+func unmarshal(l *lua.State) int {
 	payload, ok := lua.ToString(l, -1)
 	if !ok {
-		lua.Errorf(l, "unmarshall: argument must be a string")
+		lua.Errorf(l, "unmarshal: argument must be a string")
 		panic("unreachable")
 	}
 	lua.Pop(l, 1)
@@ -34,11 +34,11 @@ func unmarshall(l *lua.State) int {
 		panic("unreachable")
 	}
 
-	var recurseOnArray func([]interface{}, int)
+	var recurseOnArray func([]interface{})
 
-	var recurseOnMap func(map[string]interface{}, int)
+	var recurseOnMap func(map[string]interface{})
 
-	forwardOnType := func(val interface{}, depth int) {
+	forwardOnType := func(val interface{}) {
 
 		switch val.(type) {
 		case nil:
@@ -62,40 +62,40 @@ func unmarshall(l *lua.State) int {
 		case []interface{}:
 			a := val.([]interface{})
 			lua.CreateTable(l, len(a), 0)
-			recurseOnArray(a, depth+1)
+			recurseOnArray(a)
 
 		case map[string]interface{}:
 			m := val.(map[string]interface{})
 			lua.CreateTable(l, 0, len(m))
-			recurseOnMap(m, depth+1)
+			recurseOnMap(m)
 
 		default:
-			lua.Errorf(l, fmt.Sprintf("unmarshall: payload contains unsupported type: %T", val))
+			lua.Errorf(l, fmt.Sprintf("unmarshal: payload contains unsupported type: %T", val))
 			panic("unreachable")
 		}
 	}
 
-	recurseOnMap = func(input map[string]interface{}, depth int) {
+	recurseOnMap = func(input map[string]interface{}) {
 		// -1 is a table
 		for key, val := range input {
 			lua.PushString(l, key)
 			// -1: key, -2: table
-			forwardOnType(val, depth)
+			forwardOnType(val)
 			// -1: something, -2: key, -3: table
 			lua.RawSet(l, -3)
 		}
 	}
 
-	recurseOnArray = func(input []interface{}, depth int) {
+	recurseOnArray = func(input []interface{}) {
 		// -1 is a table
 		for i, val := range input {
-			forwardOnType(val, depth)
+			forwardOnType(val)
 			// -1: something, -2: table
 			lua.RawSetInt(l, -2, i+1)
 		}
 	}
 
-	forwardOnType(output, 0)
+	forwardOnType(output)
 
 	return 1
 }

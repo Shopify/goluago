@@ -1,9 +1,9 @@
 local json = require("goluago/encoding/json")
 
-equals("unmarshall: can decode empty object", {}, json.unmarshall("{}"))
-equals("unmarshall: can decode empty array", {}, json.unmarshall("[]"))
-equals("unmarshall: can decode null", nil, json.unmarshall("null"))
-equals("unmarshall: can decode array with null", {}, json.unmarshall("[null]"))
+equals("unmarshal: can decode empty object", {}, json.unmarshal("{}"))
+equals("unmarshal: can decode empty array", {}, json.unmarshal("[]"))
+equals("unmarshal: can decode null", nil, json.unmarshal("null"))
+equals("unmarshal: can decode array with null", {}, json.unmarshal("[null]"))
 
 -- Valid case
 local payload = [=[
@@ -41,7 +41,7 @@ want["key4"]["subkey4"]["subsubkey3"]={"arrKey", 2, true, false, {}, {}}
 want["key5"]=nil
 want["key6"]={1, nil, 2, nil}
 
-equals("unmarshall: can decode sample JSON", want, json.unmarshall(payload))
+equals("unmarshal: can decode sample JSON", want, json.unmarshal(payload))
 
 -- Error case
 local trailingComma = [=[
@@ -53,8 +53,8 @@ local trailingComma = [=[
 local wantErr = "invalid character '}' looking for beginning of object key string"
 
 local got, gotErr = pcall(function ()
-  return json.unmarshall(trailingComma)
+  return json.unmarshal(trailingComma)
 end)
 
-equals("unmarshall: invalid JSON throws an error", wantErr, gotErr)
-isfalse("unmarshall: invalid JSON decodes a nil value", got)
+equals("unmarshal: invalid JSON throws an error", wantErr, gotErr)
+isfalse("unmarshal: invalid JSON decodes a nil value", got)
