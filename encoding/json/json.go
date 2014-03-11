@@ -35,34 +35,50 @@ func unmarshal(l *lua.State) int {
 
 	forwardOnType := func(val interface{}) {
 
-		switch val.(type) {
+		switch val := val.(type) {
 		case nil:
 			lua.PushNil(l)
 
 		case bool:
-			lua.PushBoolean(l, val.(bool))
+			lua.PushBoolean(l, val)
 
 		case string:
-			lua.PushString(l, val.(string))
+			lua.PushString(l, val)
 
-		case uint8, uint16, uint32, uint64, uint:
-			lua.PushUnsigned(l, val.(uint))
+		case uint8:
+			lua.PushUnsigned(l, uint(val))
+		case uint16:
+			lua.PushUnsigned(l, uint(val))
+		case uint32:
+			lua.PushUnsigned(l, uint(val))
+		case uint64:
+			lua.PushUnsigned(l, uint(val))
+		case uint:
+			lua.PushUnsigned(l, val)
 
-		case int8, int16, int32, int64, int:
-			lua.PushInteger(l, val.(int))
+		case int8:
+			lua.PushInteger(l, int(val))
+		case int16:
+			lua.PushInteger(l, int(val))
+		case int32:
+			lua.PushInteger(l, int(val))
+		case int64:
+			lua.PushInteger(l, int(val))
+		case int:
+			lua.PushInteger(l, val)
 
-		case float32, float64:
-			lua.PushNumber(l, val.(float64))
+		case float32:
+			lua.PushNumber(l, float64(val))
+		case float64:
+			lua.PushNumber(l, float64(val))
 
 		case []interface{}:
-			a := val.([]interface{})
-			lua.CreateTable(l, len(a), 0)
-			recurseOnArray(a)
+			lua.CreateTable(l, len(val), 0)
+			recurseOnArray(val)
 
 		case map[string]interface{}:
-			m := val.(map[string]interface{})
-			lua.CreateTable(l, 0, len(m))
-			recurseOnMap(m)
+			lua.CreateTable(l, 0, len(val))
+			recurseOnMap(val)
 
 		default:
 			lua.Errorf(l, fmt.Sprintf("unmarshal: payload contains unsupported type: %T", val))
