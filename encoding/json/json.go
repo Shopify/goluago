@@ -8,14 +8,14 @@ import (
 
 func Open(l *lua.State) {
 	jsonOpen := func(l *lua.State) int {
-		lua.NewLibrary(l, regexpLibrary)
+		lua.NewLibrary(l, jsonLibrary)
 		return 1
 	}
 	lua.Require(l, "goluago/encoding/json", jsonOpen, false)
 	lua.Pop(l, 1)
 }
 
-var regexpLibrary = []lua.RegistryFunction{
+var jsonLibrary = []lua.RegistryFunction{
 	{"unmarshal", unmarshal},
 }
 
@@ -25,7 +25,6 @@ func unmarshal(l *lua.State) int {
 		lua.Errorf(l, "unmarshal: argument must be a string")
 		panic("unreachable")
 	}
-	lua.Pop(l, 1)
 
 	var output interface{} //make(map[string]interface{})
 

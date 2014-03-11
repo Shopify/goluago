@@ -7,14 +7,14 @@ import (
 
 func Open(l *lua.State) {
 	strOpen := func(l *lua.State) int {
-		lua.NewLibrary(l, regexpLibrary)
+		lua.NewLibrary(l, stringLibrary)
 		return 1
 	}
 	lua.Require(l, "goluago/strings", strOpen, false)
 	lua.Pop(l, 1)
 }
 
-var regexpLibrary = []lua.RegistryFunction{
+var stringLibrary = []lua.RegistryFunction{
 	{"split", split},
 	{"trim", trim},
 	{"replace", replace},

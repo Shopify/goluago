@@ -10,7 +10,6 @@ func RunLuaTests(t *testing.T, l *lua.State, program string) {
 	// Register the test hook
 	failHook := func(l *lua.State) int {
 		str := lua.CheckString(l, -1)
-		lua.Pop(l, 1)
 		t.Error(str)
 		return 0
 	}

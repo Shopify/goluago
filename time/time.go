@@ -6,15 +6,15 @@ import (
 )
 
 func Open(l *lua.State) {
-	strOpen := func(l *lua.State) int {
-		lua.NewLibrary(l, regexpLibrary)
+	timeOpen := func(l *lua.State) int {
+		lua.NewLibrary(l, timeLibrary)
 		return 1
 	}
-	lua.Require(l, "goluago/time", strOpen, false)
+	lua.Require(l, "goluago/time", timeOpen, false)
 	lua.Pop(l, 1)
 }
 
-var regexpLibrary = []lua.RegistryFunction{
+var timeLibrary = []lua.RegistryFunction{
 	{"now", now},
 	{"sleep", sleep},
 	{"since", since},
