@@ -23,9 +23,9 @@ var regexpLibrary = []lua.RegistryFunction{
 
 func match(l *lua.State) int {
 	pattern := lua.CheckString(l, 1)
-	bStr := lua.CheckString(l, 2)
+	s := lua.CheckString(l, 2)
 
-	matched, err := regexp.MatchString(pattern, bStr)
+	matched, err := regexp.MatchString(pattern, s)
 	if err != nil {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")

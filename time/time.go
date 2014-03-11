@@ -27,13 +27,13 @@ func sleep(l *lua.State) int {
 }
 
 func now(l *lua.State) int {
-	lua.PushInteger(l, int(time.Now().UnixNano()))
+	lua.PushNumber(l, float64(time.Now().UnixNano()))
 	return 1
 }
 
 func since(l *lua.State) int {
-	start := lua.CheckInteger(l, 1)
-	diff := int(time.Now().UnixNano()) - start
-	lua.PushInteger(l, diff)
+	start := lua.CheckNumber(l, 1)
+	diff := float64(time.Now().UnixNano()) - start
+	lua.PushNumber(l, diff)
 	return 1
 }
