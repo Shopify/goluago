@@ -81,7 +81,7 @@ func unmarshal(l *lua.State) int {
 			recurseOnMap(val)
 
 		default:
-			lua.Errorf(l, fmt.Sprintf("unmarshal: payload contains unsupported type: %T", val))
+			lua.Errorf(l, fmt.Sprintf("payload contains unsupported type: %T", val))
 			panic("unreachable")
 		}
 	}
