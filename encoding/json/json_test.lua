@@ -3,7 +3,7 @@ local json = require("goluago/encoding/json")
 equals("unmarshal: can decode empty object", {}, json.unmarshal("{}"))
 equals("unmarshal: can decode empty array", {}, json.unmarshal("[]"))
 equals("unmarshal: can decode null", nil, json.unmarshal("null"))
-equals("unmarshal: can decode array with null", {}, json.unmarshal("[null]"))
+equals("unmarshal: can decode array with null", {nil}, json.unmarshal("[null]"))
 
 -- Valid case
 local payload = [=[
