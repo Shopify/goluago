@@ -2,7 +2,6 @@ package luatest
 
 import (
 	"github.com/Shopify/go-lua"
-	// "io/ioutil"
 	"reflect"
 	"testing"
 )
