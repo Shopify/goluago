@@ -22,7 +22,8 @@ local payload = [=[
     }
   },
   "key5": null,
-  "key6": [1, null, 2, null]
+  "key6": [1, null, 2, null],
+  "key7": true
 }
 ]=]
 
@@ -40,8 +41,21 @@ want["key4"]["subkey4"]["subsubkey2"]="val2"
 want["key4"]["subkey4"]["subsubkey3"]={"arrKey", 2, true, false, {}, {}}
 want["key5"]=nil
 want["key6"]={1, nil, 2, nil}
+want["key7"]=true
 
 equals("unmarshal: can decode sample JSON", want, json.unmarshal(payload))
+
+-- Real use case
+local payload = [=[{
+  "stuff":"name='updates[1234]'",
+  "targetURL":"http://127.0.0.1:7070/targeturl",
+  "complete":true
+}]=]
+
+local want = {stuff="name='updates[1234]'", targetURL="http://127.0.0.1:7070/targeturl", complete=true}
+local got = json.unmarshal(payload)
+equals("unmarshal: can decode real use case JSON", want, got)
+istrue("unmarshal: true values should be true", got.complete)
 
 -- Error case
 local trailingComma = [=[
