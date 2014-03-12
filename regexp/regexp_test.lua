@@ -19,6 +19,16 @@ local matched, err = pcall(function() re.match("foo", {}) end)
 isfalse("match: second arg not string - matched is false", matched)
 equals("match: second arg not string - got an error message", "bad argument #2 to '?' (string expected, got table)", err)
 
+-- re.find
+local r = re.compile("fo.?")
+equals("find: can find match - present","foo", r.find("seafood"))
+equals("find: can find match - absent","", r.find("meat"))
+
+-- re.findSubmatch
+local r = re.compile("a(x*)b(y|z)c")
+equals("findSubmatch: can find submatch",{"axxxbyc","xxx","y"},r.findSubmatch("-axxxbyc-"))
+equals("findSubmatch: can find submatch",{"abzc","","z"},r.findSubmatch("-abzc-"))
+
 -- re.findAll
 local r = re.compile("a.")
 equals("findAll: can find all matches", {"ar", "an", "al"}, r.findAll("paranormal", -1))

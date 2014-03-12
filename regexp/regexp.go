@@ -39,9 +39,7 @@ func match(l *lua.State) int {
 
 func quoteMeta(l *lua.State) int {
 	s := lua.CheckString(l, 1)
-
 	quoted := regexp.QuoteMeta(s)
-
 	lua.PushString(l, quoted)
 	return 1
 }
@@ -68,15 +66,15 @@ func compile(l *lua.State) int {
 var regexpFunc = map[string]func(*regexp.Regexp) lua.Function{
 	"findAll":         reFindAll,
 	"findAllSubmatch": reFindAllSubmatch,
+	"find":            reFind,
+	"findSubmatch":    reFindSubmatch,
 }
 
 func reFindAll(re *regexp.Regexp) lua.Function {
 	return func(l *lua.State) int {
 		s := lua.CheckString(l, 1)
 		n := lua.CheckInteger(l, 2)
-
 		all := re.FindAllString(s, n)
-
 		return utils.DeepPush(l, all)
 	}
 }
@@ -85,9 +83,23 @@ func reFindAllSubmatch(re *regexp.Regexp) lua.Function {
 	return func(l *lua.State) int {
 		s := lua.CheckString(l, 1)
 		n := lua.CheckInteger(l, 2)
-
 		allSubmatch := re.FindAllStringSubmatch(s, n)
+		return utils.DeepPush(l, allSubmatch)
+	}
+}
 
+func reFind(re *regexp.Regexp) lua.Function {
+	return func(l *lua.State) int {
+		s := lua.CheckString(l, 1)
+		all := re.FindString(s)
+		return utils.DeepPush(l, all)
+	}
+}
+
+func reFindSubmatch(re *regexp.Regexp) lua.Function {
+	return func(l *lua.State) int {
+		s := lua.CheckString(l, 1)
+		allSubmatch := re.FindStringSubmatch(s)
 		return utils.DeepPush(l, allSubmatch)
 	}
 }
