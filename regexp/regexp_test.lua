@@ -29,6 +29,10 @@ local r = re.compile("a(x*)b(y|z)c")
 equals("findSubmatch: can find submatch",{"axxxbyc","xxx","y"},r.findSubmatch("-axxxbyc-"))
 equals("findSubmatch: can find submatch",{"abzc","","z"},r.findSubmatch("-abzc-"))
 
+local pattern = re.quotemeta('name="updates[').."([0-9]+)"..re.quotemeta(']"')
+local r = re.compile(pattern)
+equals("findSubmatch: can find submatch",{'name="updates[1234]"',"1234"}, r.findSubmatch('name="updates[1234]"'))
+
 -- re.findAll
 local r = re.compile("a.")
 equals("findAll: can find all matches", {"ar", "an", "al"}, r.findAll("paranormal", -1))
