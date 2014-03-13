@@ -2,6 +2,7 @@ package strings
 
 import (
 	"github.com/Shopify/go-lua"
+	"github.com/Shopify/goluago/util"
 	"strings"
 )
 
@@ -26,13 +27,7 @@ func split(l *lua.State) int {
 
 	strArr := strings.Split(str, sep)
 
-	lua.CreateTable(l, len(strArr), 0)
-	for i, strVal := range strArr {
-		lua.PushString(l, strVal)
-		lua.RawSetInt(l, -2, i+1)
-	}
-
-	return 1
+	return util.DeepPush(l, strArr)
 }
 
 func trim(l *lua.State) int {
