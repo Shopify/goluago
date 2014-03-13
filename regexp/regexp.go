@@ -2,7 +2,7 @@ package regexp
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/utils"
+	"github.com/Shopify/goluago/util"
 	"regexp"
 )
 
@@ -75,7 +75,7 @@ func reFindAll(re *regexp.Regexp) lua.Function {
 		s := lua.CheckString(l, 1)
 		n := lua.CheckInteger(l, 2)
 		all := re.FindAllString(s, n)
-		return utils.DeepPush(l, all)
+		return util.DeepPush(l, all)
 	}
 }
 
@@ -84,7 +84,7 @@ func reFindAllSubmatch(re *regexp.Regexp) lua.Function {
 		s := lua.CheckString(l, 1)
 		n := lua.CheckInteger(l, 2)
 		allSubmatch := re.FindAllStringSubmatch(s, n)
-		return utils.DeepPush(l, allSubmatch)
+		return util.DeepPush(l, allSubmatch)
 	}
 }
 
@@ -92,7 +92,7 @@ func reFind(re *regexp.Regexp) lua.Function {
 	return func(l *lua.State) int {
 		s := lua.CheckString(l, 1)
 		all := re.FindString(s)
-		return utils.DeepPush(l, all)
+		return util.DeepPush(l, all)
 	}
 }
 
@@ -100,6 +100,6 @@ func reFindSubmatch(re *regexp.Regexp) lua.Function {
 	return func(l *lua.State) int {
 		s := lua.CheckString(l, 1)
 		allSubmatch := re.FindStringSubmatch(s)
-		return utils.DeepPush(l, allSubmatch)
+		return util.DeepPush(l, allSubmatch)
 	}
 }

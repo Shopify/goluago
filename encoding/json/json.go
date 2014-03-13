@@ -3,7 +3,7 @@ package json
 import (
 	"encoding/json"
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/utils"
+	"github.com/Shopify/goluago/util"
 )
 
 func Open(l *lua.State) {
@@ -28,5 +28,5 @@ func unmarshal(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
-	return utils.DeepPush(l, output)
+	return util.DeepPush(l, output)
 }

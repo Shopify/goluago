@@ -2,7 +2,7 @@ package strings
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/utils"
+	"github.com/Shopify/goluago/util"
 	"strings"
 )
 
@@ -27,7 +27,7 @@ func split(l *lua.State) int {
 
 	strArr := strings.Split(str, sep)
 
-	return utils.DeepPush(l, strArr)
+	return util.DeepPush(l, strArr)
 }
 
 func trim(l *lua.State) int {
