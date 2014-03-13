@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/Shopify/go-lua"
+	"reflect"
 )
 
 // DeepPush will put any basic Go type on the lua stack. If the value
@@ -19,33 +20,12 @@ import (
 //    | any int                  | number (float64)
 //    | any float                | number (float64)
 //    | any complex              | number (real value as float64)
-//    |------------------------------------------------------------------------
-//    | map[string]interface{}   | table, child `interface{}` recursively
-//    |                          | resolved if childs are of a type
-//    |                          | in the first part of this table
-//    |------------------------------------------------------------------------
-//
-// For string, int, float64, interface{}.
-//
-//    | Go                       | Lua
-//    |-------------------------------------------------------------------------
-//    | []                       | table with array properties
-//    | [][]                     | 2d table with array properties
-//    | [][][]                   | 3d table with array properties
-//
-// ...where interface{} is not resolved past a fourth level.  This means
-//
-//    var arr [][][]interface{} = {{{"string", 1, 0.65, true}, {}}, {{}, {}}}
-//
-// ...will give a Lua table such as:
-//
-//    {{{string, number, number, true}, {}}, {{}, {}}}
-//
-// ...but this will not work:
-//
-//    var arr [][][][]interface{} = {{{{"string", 1, 0.65, true}, {}}, {{}, {}}}}
-//
-// ... because the fourth level is not of a basic Go type in the first table.
+//    |                          |
+//    | map[t]t                  | table, key and val `t` recursively
+//    |                          | resolved
+//    |                          |
+//    | []t                      | table with array properties, with `t`
+//    |                          | values recursively resolved
 func DeepPush(l *lua.State, v interface{}) int {
 	forwardOnType(l, v)
 	return 1
@@ -95,57 +75,41 @@ func forwardOnType(l *lua.State, val interface{}) {
 	case complex128:
 		forwardOnType(l, []float64{real(val), imag(val)})
 
-	case map[string]interface{}:
-		lua.CreateTable(l, 0, len(val))
-		recurseOnMap(l, val)
+	default:
+		forwardOnReflect(l, val)
+	}
+}
 
-	case []int:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][]int:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][][]int:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
+func forwardOnReflect(l *lua.State, val interface{}) {
 
-	case []float64:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][]float64:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][][]float64:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
+	switch v := reflect.ValueOf(val); v.Kind() {
 
-	case []string:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][]string:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][][]string:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
+	case reflect.Array:
+		recurseOnFuncSlice(l, func(i int) interface{} { return v.Index(i).Interface() }, v.Len())
 
-	case []interface{}:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][]interface{}:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
-	case [][][]interface{}:
-		recurseOnFuncArray(l, func(i int) interface{} { return val[i] }, len(val))
+	case reflect.Slice:
+		recurseOnFuncSlice(l, func(i int) interface{} { return v.Index(i).Interface() }, v.Len())
+
+	case reflect.Map:
+		lua.CreateTable(l, 0, v.Len())
+		for _, key := range v.MapKeys() {
+			mapKey := key.Interface()
+			mapVal := v.MapIndex(key).Interface()
+			forwardOnType(l, mapKey)
+			forwardOnType(l, mapVal)
+			lua.RawSet(l, -3)
+		}
 
 	default:
 		lua.Errorf(l, fmt.Sprintf("contains unsupported type: %T", val))
 		panic("unreachable")
 	}
-}
 
-func recurseOnMap(l *lua.State, input map[string]interface{}) {
-	// -1 is a table
-	for key, val := range input {
-		forwardOnType(l, key)
-		forwardOnType(l, val)
-		// -1: something, -2: key, -3: table
-		lua.RawSet(l, -3)
-	}
 }
 
 // the hack of using a func(int)interface{} makes it that it is valid for any
-// combination of []something
-func recurseOnFuncArray(l *lua.State, input func(int) interface{}, n int) {
+// type of slice
+func recurseOnFuncSlice(l *lua.State, input func(int) interface{}, n int) {
 	lua.CreateTable(l, n, 0)
 	for i := 0; i < n; i++ {
 		forwardOnType(l, input(i))
