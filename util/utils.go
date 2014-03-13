@@ -1,4 +1,4 @@
-package utils
+package util
 
 import (
 	"fmt"
@@ -41,7 +41,7 @@ import (
 //
 //    {{{string, number, number, true}, {}}, {{}, {}}}
 //
-// ...but this will not work (because :
+// ...but this will not work:
 //
 //    var arr [][][][]interface{} = {{{{"string", 1, 0.65, true}, {}}, {{}, {}}}}
 //
@@ -91,9 +91,9 @@ func forwardOnType(l *lua.State, val interface{}) {
 		lua.PushNumber(l, val)
 
 	case complex64:
-		lua.PushNumber(l, float64(real(val)))
+		forwardOnType(l, []float32{real(val), imag(val)})
 	case complex128:
-		lua.PushNumber(l, real(val))
+		forwardOnType(l, []float64{real(val), imag(val)})
 
 	case map[string]interface{}:
 		lua.CreateTable(l, 0, len(val))
