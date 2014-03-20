@@ -64,11 +64,9 @@ local trailingComma = [=[
 }
 ]=]
 
-local wantErr = "invalid character '}' looking for beginning of object key string"
-
 local got, gotErr = pcall(function ()
   return json.unmarshal(trailingComma)
 end)
 
-equals("unmarshal: invalid JSON throws an error", wantErr, gotErr)
+istrue("unmarshal: invalid JSON throws an error", gotErr)
 isfalse("unmarshal: invalid JSON decodes a nil value", got)
