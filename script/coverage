@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+PROJECT=github.com/Shopify/goluago
+go test -covermode=count -coverprofile=count.out $PROJECT/tst -coverpkg=$PROJECT/...
+go tool cover -html=count.out
