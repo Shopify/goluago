@@ -1,4 +1,4 @@
-package luatest
+package tst
 
 import (
 	"github.com/Shopify/go-lua"
@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func RunLuaTests(t *testing.T, filename string) {
+func runLuaTests(t *testing.T, filename string) {
 
 	l := lua.NewState()
 	lua.OpenLibraries(l)
