@@ -2,12 +2,12 @@ package goluago
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/encoding/json"
-	"github.com/Shopify/goluago/fmt"
-	"github.com/Shopify/goluago/net/url"
-	"github.com/Shopify/goluago/regexp"
-	"github.com/Shopify/goluago/strings"
-	"github.com/Shopify/goluago/time"
+	"github.com/Shopify/goluago/pkg/encoding/json"
+	"github.com/Shopify/goluago/pkg/fmt"
+	"github.com/Shopify/goluago/pkg/net/url"
+	"github.com/Shopify/goluago/pkg/regexp"
+	"github.com/Shopify/goluago/pkg/strings"
+	"github.com/Shopify/goluago/pkg/time"
 )
 
 func Open(l *lua.State) {
