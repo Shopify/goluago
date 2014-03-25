@@ -6,8 +6,10 @@ import (
 	"io"
 )
 
-func DumpStack(l *lua.State, w io.Writer, prefix string) (n int, err error) {
-	n, err = fmt.Fprintf(w, "%s: top=%d, 'real (pseudo): val':\n", prefix, lua.Top(l))
+// DumpFrame writes the currently visible frames of the Lua stack in a
+// human-readable way.
+func DumpFrame(l *lua.State, w io.Writer) (n int, err error) {
+	n, err = fmt.Fprintf(w, "top=%d, 'real (pseudo): val':\n", lua.Top(l))
 	if err != nil {
 		return
 	}
