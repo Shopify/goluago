@@ -2,7 +2,6 @@ package url
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/util"
 	"net/url"
 )
 
@@ -52,19 +51,21 @@ func pushURL(l *lua.State, u *url.URL) {
 		key := lua.CheckString(l, 2)
 		switch key {
 		case "scheme":
-			return util.DeepPush(l, u.Scheme)
+			lua.PushString(l, u.Scheme)
 		case "opaque":
-			return util.DeepPush(l, u.Opaque)
+			lua.PushString(l, u.Opaque)
 		case "host":
-			return util.DeepPush(l, u.Host)
+			lua.PushString(l, u.Host)
 		case "path":
-			return util.DeepPush(l, u.Path)
+			lua.PushString(l, u.Path)
 		case "rawQuery":
-			return util.DeepPush(l, u.RawQuery)
+			lua.PushString(l, u.RawQuery)
 		case "fragment":
-			return util.DeepPush(l, u.Fragment)
+			lua.PushString(l, u.Fragment)
+		default:
+			return 0
 		}
-		return 0
+		return 1
 	}
 
 	lua.PushGoFunction(l, getHook)
@@ -100,7 +101,8 @@ func pushURL(l *lua.State, u *url.URL) {
 
 func urlIsAbs(u *url.URL) lua.Function {
 	return func(l *lua.State) int {
-		return util.DeepPush(l, u.IsAbs())
+		lua.PushBoolean(l, u.IsAbs())
+		return 1
 	}
 }
 
@@ -118,12 +120,14 @@ func urlParse(u *url.URL) lua.Function {
 
 func urlRequestURI(u *url.URL) lua.Function {
 	return func(l *lua.State) int {
-		return util.DeepPush(l, u.RequestURI())
+		lua.PushString(l, u.RequestURI())
+		return 1
 	}
 }
 
 func urlString(u *url.URL) lua.Function {
 	return func(l *lua.State) int {
-		return util.DeepPush(l, u.String())
+		lua.PushString(l, u.String())
+		return 1
 	}
 }

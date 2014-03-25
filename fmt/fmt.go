@@ -3,7 +3,6 @@ package fmt
 import (
 	"fmt"
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/util"
 )
 
 func Open(l *lua.State) {
@@ -31,13 +30,15 @@ func pFamily(f func(a ...interface{}) (int, error)) lua.Function {
 			lua.Errorf(l, err.Error())
 			panic("unreachable")
 		}
-		return util.DeepPush(l, n)
+		lua.PushInteger(l, n)
+		return 1
 	}
 }
 
 func sFamily(f func(a ...interface{}) string) lua.Function {
 	return func(l *lua.State) int {
-		return util.DeepPush(l, f(getVarArgs(l, 1)...))
+		lua.PushString(l, f(getVarArgs(l, 1)...))
+		return 1
 	}
 }
 
@@ -49,13 +50,15 @@ func printf(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
-	return util.DeepPush(l, n)
+	lua.PushInteger(l, n)
+	return 1
 }
 
 func sprintf(l *lua.State) int {
 	format := lua.CheckString(l, 1)
 	vargs := getVarArgs(l, 2)
-	return util.DeepPush(l, fmt.Sprintf(format, vargs...))
+	lua.PushString(l, fmt.Sprintf(format, vargs...))
+	return 1
 }
 
 func getVarArgs(l *lua.State, from int) (vargs []interface{}) {
