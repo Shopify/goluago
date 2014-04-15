@@ -129,15 +129,6 @@ var fromLuaTT = []struct {
     want["billing_address[country]"] = "Canada"
     want["billing_address[province]"] = "Manitoba"
     want["billing_address[phone]"] = "2042222222"
-    want["shipping_address[first_name]"] = nil
-    want["shipping_address[last_name]"] = nil
-    want["shipping_address[company]"] = nil
-    want["shipping_address[address1]"] = nil
-    want["shipping_address[address2]"] = nil
-    want["shipping_address[city]"] = nil
-    want["shipping_address[zip]"] = nil
-    want["shipping_address[province]"] = nil
-    want["shipping_address[phone]"] = nil
 
     pull_table(want)`,
 	},
