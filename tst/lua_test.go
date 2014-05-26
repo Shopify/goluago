@@ -1,6 +1,7 @@
 package tst
 
 import (
+	"github.com/Shopify/goluago"
 	"testing"
 )
 
@@ -19,6 +20,6 @@ var tests = []struct {
 func TestAllPackages(t *testing.T) {
 	for _, test := range tests {
 		t.Logf("Testing package '%s'", test.pkg)
-		runLuaTests(t, test.filename)
+		RunLuaTests(t, goluago.Open, test.filename)
 	}
 }

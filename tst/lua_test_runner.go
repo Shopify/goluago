@@ -2,16 +2,15 @@ package tst
 
 import (
 	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago"
 	"reflect"
 	"testing"
 )
 
-func runLuaTests(t *testing.T, filename string) {
+func RunLuaTests(t *testing.T, libraryCallback func(l *lua.State), filename string) {
 
 	l := lua.NewState()
 	lua.OpenLibraries(l)
-	goluago.Open(l)
+	libraryCallback(l)
 
 	// Register the test hook
 	lua.Register(l, "istrue", isTrue(t))
