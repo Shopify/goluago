@@ -6,6 +6,7 @@ import (
 	"github.com/Shopify/goluago/util"
 	"github.com/bradfitz/iter"
 	"math/rand"
+	"reflect"
 	"testing"
 )
 
@@ -157,4 +158,104 @@ func TestPullStringTableFromLua(t *testing.T) {
 		checkMaps(t, want, got)
 	}
 
+}
+
+var fromLuaRecTT = []struct {
+	want map[string]interface{}
+	code string
+}{
+	{
+		want: map[string]interface{}{
+			"hello": "lelele",
+			"oh":    1234,
+			"foo": map[string]interface{}{
+				"go": "og",
+				"ruby": map[string]interface{}{
+					"ru": "ur",
+					"by": "yb",
+				},
+				"c": "c",
+			},
+		},
+		code: `
+		want = {
+		    hello = "lelele",
+		    oh = 1234,
+		    foo = {
+		        go = "og",
+		        ruby = {
+		            ru = "ur",
+		            by = "yb",
+		        },
+		        c = "c",
+		    },
+		}
+		pullTable(want)`,
+	},
+}
+
+func TestPullTableFromLua(t *testing.T) {
+
+	for _, tt := range fromLuaRecTT {
+		want, code := tt.want, tt.code
+		l := lua.NewState()
+
+		var got map[string]interface{}
+		var err error
+
+		lua.Register(l, "pullTable", func(l *lua.State) int {
+			got, err = util.PullTable(l, 1)
+			return 0
+		})
+		lua.LoadString(l, code)
+		lua.Call(l, 0, 0)
+
+		if err != nil {
+			t.Fatalf("pulling table, %v", err)
+		}
+
+		if !reflect.DeepEqual(want, got) {
+			t.Fatalf("maps are not equal, expected %v, got %v", want, got)
+		}
+	}
+
+}
+
+func TestPullTableFailsWhenNotATable(t *testing.T) {
+	l := lua.NewState()
+
+	lua.PushString(l, "not a table")
+	_, err := util.PullTable(l, lua.Top(l))
+
+	if err == nil {
+		t.Fatalf("strings should not be convertible to tables")
+	}
+}
+
+func TestPullTableFailsGracefullyOnCyclicStructures(t *testing.T) {
+	l := lua.NewState()
+
+	lua.NewTable(l)
+	lua.PushValue(l, -1)
+	lua.SetField(l, -2, "foo")
+
+	_, err := util.PullTable(l, lua.Top(l))
+
+	if err == nil {
+		t.Fatalf("cyclic tables should not not be convertible to maps")
+	}
+}
+
+func TestPullTableFailsGracefullyOnUnconvertableValues(t *testing.T) {
+	l := lua.NewState()
+
+	lua.NewTable(l)
+	lua.PushGoClosure(l, func(l *lua.State) int { return 0 }, 0)
+	lua.SetField(l, -2, "foo")
+
+	_, err := util.PullTable(l, lua.Top(l))
+
+	if err == nil {
+		t.Fatalf("should not be able to convert closure")
+	}
 }
