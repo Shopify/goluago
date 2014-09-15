@@ -4,35 +4,19 @@ import (
 	"github.com/Shopify/go-lua"
 	"reflect"
 	"testing"
+
+	luatesting "github.com/Shopify/goluago/pkg/testing"
 )
 
 func RunLuaTests(t *testing.T, libraryCallback func(l *lua.State), filename string) {
-
-	l := lua.NewState()
-	lua.OpenLibraries(l)
-	libraryCallback(l)
-
-	// Register the test hook
-	lua.Register(l, "istrue", isTrue(t))
-	lua.Register(l, "isfalse", isFalse(t))
-	lua.Register(l, "equals", isEqual(t))
-	lua.Register(l, "notequals", isNotEqual(t))
-
-	// Load and exec the test program
-	wantTop := lua.Top(l)
-
-	if err := lua.LoadFile(l, filename, ""); err != nil {
-		t.Fatalf("loading lua test script in VM, %v", err)
+	requireCallback := func(l *lua.State) {
+		lua.Register(l, "istrue", isTrue(t))
+		lua.Register(l, "isfalse", isFalse(t))
+		lua.Register(l, "equals", isEqual(t))
+		lua.Register(l, "notequals", isNotEqual(t))
+		libraryCallback(l)
 	}
-
-	if err := lua.ProtectedCall(l, 0, 0, 0); err != nil {
-		t.Errorf("executing lua test script, %v", err)
-	}
-	gotTop := lua.Top(l)
-
-	if wantTop != gotTop {
-		t.Errorf("Unbalanced stack!, want %d, got %d", wantTop, gotTop)
-	}
+	luatesting.RunLuaTestFile(t, requireCallback, filename)
 }
 
 func isTrue(t *testing.T) lua.Function {
