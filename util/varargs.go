@@ -39,3 +39,12 @@ func PullVarargs(l *lua.State, startIndex int) ([]interface{}, error) {
 	}
 	return varargs, nil
 }
+
+func MustPullVarargs(l *lua.State, startIndex int) []interface{} {
+	varargs, err := PullVarargs(l, startIndex)
+	if err != nil {
+		lua.Errorf(l, err.Error())
+		panic("unreachable")
+	}
+	return varargs
+}
