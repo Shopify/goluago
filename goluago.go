@@ -8,6 +8,7 @@ import (
 	"github.com/Shopify/goluago/pkg/regexp"
 	"github.com/Shopify/goluago/pkg/strings"
 	"github.com/Shopify/goluago/pkg/time"
+	"github.com/Shopify/goluago/util"
 )
 
 func Open(l *lua.State) {
@@ -17,4 +18,5 @@ func Open(l *lua.State) {
 	time.Open(l)
 	fmt.Open(l)
 	url.Open(l)
+	util.Open(l)
 }
