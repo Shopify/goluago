@@ -2,12 +2,15 @@ package util_test
 
 import (
 	"bytes"
-	"github.com/Shopify/go-lua"
-	"github.com/Shopify/goluago/util"
-	"github.com/bradfitz/iter"
 	"math/rand"
 	"reflect"
 	"testing"
+
+	luatesting "../pkg/testing"
+
+	"github.com/Shopify/go-lua"
+	"github.com/Shopify/goluago/util"
+	"github.com/bradfitz/iter"
 )
 
 ////////////////////////
@@ -200,7 +203,7 @@ func TestPullTableFromLua(t *testing.T) {
 		want, code := tt.want, tt.code
 		l := lua.NewState()
 
-		var got map[string]interface{}
+		var got interface{}
 		var err error
 
 		lua.Register(l, "pullTable", func(l *lua.State) int {
@@ -219,6 +222,46 @@ func TestPullTableFromLua(t *testing.T) {
 		}
 	}
 
+}
+
+func TestPullTableWithArraysFromLua(t *testing.T) {
+	require := func(l *lua.State) {
+		util.Open(l)
+		lua.Register(l, "validateTable", func(l *lua.State) int {
+			actual, err := util.PullTable(l, -1)
+			if err != nil {
+				t.Fatalf("failed to pull table: %s", err.Error())
+			}
+
+			expected := map[string]interface{}{
+				"foo": []interface{}{
+					"I",
+					"love",
+					map[string]interface{}{
+						"lua": []interface{}{"LuaJIT", "go-lua"},
+						"go":  []interface{}{"6g", "gcc-go"},
+					},
+				},
+			}
+			if !reflect.DeepEqual(expected, actual) {
+				t.Fatalf("expected %v, actual %v", expected, actual)
+			}
+
+			return 0
+		})
+	}
+	luatesting.RunLuaTestString(t, require, `
+		validateTable({
+			foo = array({
+			  "I",
+				"love",
+				{
+					lua = array({"LuaJIT", "go-lua"}),
+					go = array({"6g", "gcc-go"}),
+				},
+			})
+		})
+	`)
 }
 
 func TestPullTableFailsWhenNotATable(t *testing.T) {
