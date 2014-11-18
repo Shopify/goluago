@@ -20,5 +20,5 @@ func Open(l *lua.State) {
 	fmt.Open(l)
 	url.Open(l)
 	util.Open(l)
-	env.Open()
+	env.Open(l)
 }
