@@ -3,6 +3,7 @@ package goluago
 import (
 	"github.com/Shopify/go-lua"
 	"github.com/Shopify/goluago/pkg/encoding/json"
+	"github.com/Shopify/goluago/pkg/env"
 	"github.com/Shopify/goluago/pkg/fmt"
 	"github.com/Shopify/goluago/pkg/net/url"
 	"github.com/Shopify/goluago/pkg/regexp"
@@ -19,4 +20,5 @@ func Open(l *lua.State) {
 	fmt.Open(l)
 	url.Open(l)
 	util.Open(l)
+	env.Open()
 }
