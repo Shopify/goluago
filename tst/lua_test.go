@@ -15,6 +15,7 @@ var tests = []struct {
 	{"strings", "strings/strings_test.lua"},
 	{"time", "time/time_test.lua"},
 	{"url", "net/url/url_test.lua"},
+	{"env", "env/env_test.lua"},
 }
 
 func TestAllPackages(t *testing.T) {
