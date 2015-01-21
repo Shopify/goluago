@@ -2,6 +2,8 @@ package goluago
 
 import (
 	"github.com/Shopify/go-lua"
+	"github.com/Shopify/goluago/pkg/crypto/hmac"
+	"github.com/Shopify/goluago/pkg/encoding/base64"
 	"github.com/Shopify/goluago/pkg/encoding/json"
 	"github.com/Shopify/goluago/pkg/env"
 	"github.com/Shopify/goluago/pkg/fmt"
@@ -20,5 +22,7 @@ func Open(l *lua.State) {
 	fmt.Open(l)
 	url.Open(l)
 	util.Open(l)
+	hmac.Open(l)
+	base64.Open(l)
 	env.Open(l)
 }
