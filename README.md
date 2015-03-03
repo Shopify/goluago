@@ -1,6 +1,7 @@
-# package `goluago`
+Package goluago
+===============
 
-Wraps standard Go libraries so they can be used with the Lua VM implementation in package `github.com/Shopify/go-lua`.
+Wraps standard Go libraries so they can be used with the [go-lua](github.com/Shopify/go-lua) Lua VM implementation.
 
 License
 -------
