@@ -12,7 +12,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/crypto/hmac", hmacOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var hmacLibrary = []lua.RegistryFunction{
@@ -25,6 +25,6 @@ func g(l *lua.State) int {
 
 	mac := hmac.New(sha256.New, []byte(key))
 	mac.Write([]byte(message))
-	lua.PushString(l, string(mac.Sum(nil)))
+	l.PushString(string(mac.Sum(nil)))
 	return 1
 }

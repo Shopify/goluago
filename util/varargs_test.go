@@ -10,84 +10,84 @@ import (
 
 func TestVarargsFrom1(t *testing.T) {
 	l := lua.NewState()
-	lua.PushString(l, "foo")
-	lua.PushString(l, "bar")
-	lua.PushString(l, "baz")
+	l.PushString("foo")
+	l.PushString("bar")
+	l.PushString("baz")
 
 	testVarargs(t, l, 1, []interface{}{"foo", "bar", "baz"})
 }
 
 func TestVarargsFrom2(t *testing.T) {
 	l := lua.NewState()
-	lua.PushString(l, "foo")
-	lua.PushString(l, "bar")
-	lua.PushString(l, "baz")
+	l.PushString("foo")
+	l.PushString("bar")
+	l.PushString("baz")
 
 	testVarargs(t, l, 2, []interface{}{"bar", "baz"})
 }
 
 func TestVarargsFromEnd(t *testing.T) {
 	l := lua.NewState()
-	lua.PushString(l, "foo")
-	lua.PushString(l, "bar")
-	lua.PushString(l, "baz")
+	l.PushString("foo")
+	l.PushString("bar")
+	l.PushString("baz")
 
 	testVarargs(t, l, 4, []interface{}{})
 }
 
 func TestVarargsFromBeyondEnd(t *testing.T) {
 	l := lua.NewState()
-	lua.PushString(l, "foo")
-	lua.PushString(l, "bar")
-	lua.PushString(l, "baz")
+	l.PushString("foo")
+	l.PushString("bar")
+	l.PushString("baz")
 
 	testVarargs(t, l, 5, []interface{}{})
 }
 
 func TestVarargsWithNil(t *testing.T) {
 	l := lua.NewState()
-	lua.PushNil(l)
+	l.PushNil()
 
 	testVarargs(t, l, 1, []interface{}{nil})
 }
 
 func TestVarargsWithBoolean(t *testing.T) {
 	l := lua.NewState()
-	lua.PushBoolean(l, true)
-	lua.PushBoolean(l, false)
+	l.PushBoolean(true)
+	l.PushBoolean(false)
 
 	testVarargs(t, l, 1, []interface{}{true, false})
 }
 
 func TestVarargsWithNumber(t *testing.T) {
 	l := lua.NewState()
-	lua.PushNumber(l, -20.5)
-	lua.PushNumber(l, 0)
-	lua.PushNumber(l, 10000)
+	l.PushNumber(-20.5)
+	l.PushNumber(0)
+	l.PushNumber(10000)
 
 	testVarargs(t, l, 1, []interface{}{-20.5, 0., 10000.})
 }
 
 func TestVarargsWithString(t *testing.T) {
 	l := lua.NewState()
-	lua.PushString(l, "foo")
-	lua.PushString(l, "")
+	l.PushString("foo")
+	l.PushString("")
 
 	testVarargs(t, l, 1, []interface{}{"foo", ""})
 }
 
 func TestVarargsWithTable(t *testing.T) {
 	l := lua.NewState()
-	lua.NewTable(l)
-	lua.PushString(l, "bar")
-	lua.SetField(l, -2, "foo")
+	l.NewTable()
+	l.PushString("bar")
+	l.SetField(-2, "foo")
 
 	testVarargs(t, l, 1, []interface{}{map[string]interface{}{"foo": "bar"}})
 }
 
 func TestVarargsWithFunction(t *testing.T) {
 	l := lua.NewState()
-	lua.PushGoClosure(l, func(l *lua.State) int { return 0 }, 0)
+	l.PushGoClosure(func(l *lua.State) int { return 0 }, 0)
 
 	actual, err := PullVarargs(l, 1)
 	if err != nil {
@@ -104,14 +104,14 @@ func TestVarargsWithFunction(t *testing.T) {
 func TestVarargsWithUserData(t *testing.T) {
 	userdata := regexp.MustCompile(".")
 	l := lua.NewState()
-	lua.PushUserData(l, userdata)
+	l.PushUserData(userdata)
 
 	testVarargs(t, l, 1, []interface{}{userdata})
 }
 
 func TestVarargsWithThread(t *testing.T) {
 	l := lua.NewState()
-	lua.PushThread(l)
+	l.PushThread()
 
 	testVarargs(t, l, 1, []interface{}{l})
 }

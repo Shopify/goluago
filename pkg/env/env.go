@@ -14,7 +14,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/env", envOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var fmtLibrary = []lua.RegistryFunction{
@@ -25,7 +25,7 @@ var fmtLibrary = []lua.RegistryFunction{
 func getenv(l *lua.State) int {
 	key := lua.CheckString(l, 1)
 	val := os.Getenv(key)
-	lua.PushString(l, val)
+	l.PushString(val)
 	return 1
 }
 

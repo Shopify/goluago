@@ -11,7 +11,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/fmt", fmtOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var fmtLibrary = []lua.RegistryFunction{
@@ -30,14 +30,14 @@ func pFamily(f func(a ...interface{}) (int, error)) lua.Function {
 			lua.Errorf(l, err.Error())
 			panic("unreachable")
 		}
-		lua.PushInteger(l, n)
+		l.PushInteger(n)
 		return 1
 	}
 }
 
 func sFamily(f func(a ...interface{}) string) lua.Function {
 	return func(l *lua.State) int {
-		lua.PushString(l, f(getVarArgs(l, 1)...))
+		l.PushString(f(getVarArgs(l, 1)...))
 		return 1
 	}
 }
@@ -50,20 +50,20 @@ func printf(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
-	lua.PushInteger(l, n)
+	l.PushInteger(n)
 	return 1
 }
 
 func sprintf(l *lua.State) int {
 	format := lua.CheckString(l, 1)
 	vargs := getVarArgs(l, 2)
-	lua.PushString(l, fmt.Sprintf(format, vargs...))
+	l.PushString(fmt.Sprintf(format, vargs...))
 	return 1
 }
 
 func getVarArgs(l *lua.State, from int) (vargs []interface{}) {
-	for i := from; i <= lua.Top(l); i++ {
-		vargs = append(vargs, lua.ToValue(l, i))
+	for i := from; i <= l.Top(); i++ {
+		vargs = append(vargs, l.ToValue(i))
 	}
 	return
 }

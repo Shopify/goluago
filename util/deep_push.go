@@ -35,40 +35,40 @@ func forwardOnType(l *lua.State, val interface{}) {
 
 	switch val := val.(type) {
 	case nil:
-		lua.PushNil(l)
+		l.PushNil()
 
 	case bool:
-		lua.PushBoolean(l, val)
+		l.PushBoolean(val)
 
 	case string:
-		lua.PushString(l, val)
+		l.PushString(val)
 
 	case uint8:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case uint16:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case uint32:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case uint64:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case uint:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 
 	case int8:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case int16:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case int32:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case int64:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case int:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 
 	case float32:
-		lua.PushNumber(l, float64(val))
+		l.PushNumber(float64(val))
 	case float64:
-		lua.PushNumber(l, val)
+		l.PushNumber(val)
 
 	case complex64:
 		forwardOnType(l, []float32{real(val), imag(val)})
@@ -88,13 +88,13 @@ func forwardOnReflect(l *lua.State, val interface{}) {
 		recurseOnFuncSlice(l, func(i int) interface{} { return v.Index(i).Interface() }, v.Len())
 
 	case reflect.Map:
-		lua.CreateTable(l, 0, v.Len())
+		l.CreateTable(0, v.Len())
 		for _, key := range v.MapKeys() {
 			mapKey := key.Interface()
 			mapVal := v.MapIndex(key).Interface()
 			forwardOnType(l, mapKey)
 			forwardOnType(l, mapVal)
-			lua.RawSet(l, -3)
+			l.RawSet(-3)
 		}
 
 	default:
@@ -107,9 +107,9 @@ func forwardOnReflect(l *lua.State, val interface{}) {
 // the hack of using a func(int)interface{} makes it that it is valid for any
 // type of slice
 func recurseOnFuncSlice(l *lua.State, input func(int) interface{}, n int) {
-	lua.CreateTable(l, n, 0)
+	l.CreateTable(n, 0)
 	for i := 0; i < n; i++ {
 		forwardOnType(l, input(i))
-		lua.RawSetInt(l, -2, i+1)
+		l.RawSetInt(-2, i+1)
 	}
 }

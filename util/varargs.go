@@ -3,7 +3,7 @@ package util
 import "github.com/Shopify/go-lua"
 
 func PullVarargs(l *lua.State, startIndex int) ([]interface{}, error) {
-	top := lua.Top(l)
+	top := l.Top()
 	if top < startIndex {
 		return []interface{}{}, nil
 	}
@@ -12,11 +12,11 @@ func PullVarargs(l *lua.State, startIndex int) ([]interface{}, error) {
 	for i := startIndex; i <= top; i++ {
 		var value interface{}
 		var err error
-		switch lua.TypeOf(l, i) {
+		switch l.TypeOf(i) {
 		case lua.TypeNil:
 			value = nil
 		case lua.TypeBoolean:
-			value = lua.ToBoolean(l, i)
+			value = l.ToBoolean(i)
 		case lua.TypeLightUserData:
 			value = nil // not supported by go-lua
 		case lua.TypeNumber:
@@ -29,11 +29,11 @@ func PullVarargs(l *lua.State, startIndex int) ([]interface{}, error) {
 				return nil, err
 			}
 		case lua.TypeFunction:
-			value = lua.ToGoFunction(l, i)
+			value = l.ToGoFunction(i)
 		case lua.TypeUserData:
-			value = lua.ToUserData(l, i)
+			value = l.ToUserData(i)
 		case lua.TypeThread:
-			value = lua.ToThread(l, i)
+			value = l.ToThread(i)
 		}
 		varargs[i-startIndex] = value
 	}

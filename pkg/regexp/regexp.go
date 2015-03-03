@@ -14,7 +14,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/regexp", reOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var regexpLibrary = []lua.RegistryFunction{
@@ -33,14 +33,14 @@ func match(l *lua.State) int {
 		panic("unreachable")
 	}
 
-	lua.PushBoolean(l, matched)
+	l.PushBoolean(matched)
 	return 1
 }
 
 func quoteMeta(l *lua.State) int {
 	s := lua.CheckString(l, 1)
 	quoted := regexp.QuoteMeta(s)
-	lua.PushString(l, quoted)
+	l.PushString(quoted)
 	return 1
 }
 
@@ -52,12 +52,12 @@ func compile(l *lua.State) int {
 		panic("unreachable")
 	}
 
-	lua.NewTable(l)
+	l.NewTable()
 	for name, goFn := range regexpFunc {
 		// -1: tbl
-		lua.PushGoFunction(l, goFn(re))
+		l.PushGoFunction(goFn(re))
 		// -1: fn, -2:tbl
-		lua.SetField(l, -2, name)
+		l.SetField(-2, name)
 	}
 
 	return 1

@@ -12,7 +12,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/encoding/json", jsonOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var jsonLibrary = []lua.RegistryFunction{

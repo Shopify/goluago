@@ -147,12 +147,12 @@ func TestPullStringTableFromLua(t *testing.T) {
 		var got map[string]string
 		var err error
 
-		lua.Register(l, "pull_table", func(l *lua.State) int {
+		l.Register("pull_table", func(l *lua.State) int {
 			got, err = util.PullStringTable(l, 1)
 			return 0
 		})
 		lua.LoadString(l, code)
-		lua.Call(l, 0, 0)
+		l.Call(0, 0)
 
 		if err != nil {
 			t.Fatalf("pulling table, %v", err)
@@ -206,12 +206,12 @@ func TestPullTableFromLua(t *testing.T) {
 		var got interface{}
 		var err error
 
-		lua.Register(l, "pullTable", func(l *lua.State) int {
+		l.Register("pullTable", func(l *lua.State) int {
 			got, err = util.PullTable(l, 1)
 			return 0
 		})
 		lua.LoadString(l, code)
-		lua.Call(l, 0, 0)
+		l.Call(0, 0)
 
 		if err != nil {
 			t.Fatalf("pulling table, %v", err)
@@ -227,7 +227,7 @@ func TestPullTableFromLua(t *testing.T) {
 func TestPullTableWithArraysFromLua(t *testing.T) {
 	require := func(l *lua.State) {
 		util.Open(l)
-		lua.Register(l, "validateTable", func(l *lua.State) int {
+		l.Register("validateTable", func(l *lua.State) int {
 			actual, err := util.PullTable(l, -1)
 			if err != nil {
 				t.Fatalf("failed to pull table: %s", err.Error())
@@ -267,8 +267,8 @@ func TestPullTableWithArraysFromLua(t *testing.T) {
 func TestPullTableFailsWhenNotATable(t *testing.T) {
 	l := lua.NewState()
 
-	lua.PushString(l, "not a table")
-	_, err := util.PullTable(l, lua.Top(l))
+	l.PushString("not a table")
+	_, err := util.PullTable(l, l.Top())
 
 	if err == nil {
 		t.Fatalf("strings should not be convertible to tables")
@@ -278,11 +278,11 @@ func TestPullTableFailsWhenNotATable(t *testing.T) {
 func TestPullTableFailsGracefullyOnCyclicStructures(t *testing.T) {
 	l := lua.NewState()
 
-	lua.NewTable(l)
-	lua.PushValue(l, -1)
-	lua.SetField(l, -2, "foo")
+	l.NewTable()
+	l.PushValue(-1)
+	l.SetField(-2, "foo")
 
-	_, err := util.PullTable(l, lua.Top(l))
+	_, err := util.PullTable(l, l.Top())
 
 	if err == nil {
 		t.Fatalf("cyclic tables should not not be convertible to maps")
@@ -292,11 +292,11 @@ func TestPullTableFailsGracefullyOnCyclicStructures(t *testing.T) {
 func TestPullTableFailsGracefullyOnUnconvertableValues(t *testing.T) {
 	l := lua.NewState()
 
-	lua.NewTable(l)
-	lua.PushGoClosure(l, func(l *lua.State) int { return 0 }, 0)
-	lua.SetField(l, -2, "foo")
+	l.NewTable()
+	l.PushGoClosure(func(l *lua.State) int { return 0 }, 0)
+	l.SetField(-2, "foo")
 
-	_, err := util.PullTable(l, lua.Top(l))
+	_, err := util.PullTable(l, l.Top())
 
 	if err == nil {
 		t.Fatalf("should not be able to convert closure")

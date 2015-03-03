@@ -25,17 +25,17 @@ func runLuaTest(t *testing.T, requireCallback func(l *lua.State), loadCallback f
 	openTestingLibrary(l, t)
 	requireCallback(l)
 
-	wantTop := lua.Top(l)
+	wantTop := l.Top()
 
 	if err := loadCallback(l); err != nil {
 		t.Fatalf("loading lua test script in VM, %v", err)
 	}
 
-	if err := lua.ProtectedCall(l, 0, 0, 0); err != nil {
+	if err := l.ProtectedCall(0, 0, 0); err != nil {
 		t.Errorf("executing lua test script, %v", err)
 	}
 
-	gotTop := lua.Top(l)
+	gotTop := l.Top()
 	if wantTop != gotTop {
 		t.Errorf("unbalanced stack, height before %d, height after %d", wantTop, gotTop)
 	}
@@ -54,7 +54,7 @@ func openTestingLibrary(l *lua.State, t *testing.T) {
 		return 1
 	}
 	lua.Require(l, "goluago/testing", open, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 func error_(t *testing.T) lua.Function {

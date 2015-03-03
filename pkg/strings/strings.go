@@ -12,7 +12,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/strings", strOpen, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var stringLibrary = []lua.RegistryFunction{
@@ -32,7 +32,7 @@ func split(l *lua.State) int {
 
 func trim(l *lua.State) int {
 	str := lua.CheckString(l, 1)
-	lua.PushString(l, strings.TrimSpace(str))
+	l.PushString(strings.TrimSpace(str))
 	return 1
 }
 
@@ -42,6 +42,6 @@ func replace(l *lua.State) int {
 	new := lua.CheckString(l, 3)
 	n := lua.CheckInteger(l, 4)
 
-	lua.PushString(l, strings.Replace(s, old, new, n))
+	l.PushString(strings.Replace(s, old, new, n))
 	return 1
 }

@@ -11,7 +11,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/encoding/base64", base64Open, false)
-	lua.Pop(l, 1)
+	l.Pop(1)
 }
 
 var base64Library = []lua.RegistryFunction{
@@ -21,7 +21,7 @@ var base64Library = []lua.RegistryFunction{
 
 func encode(l *lua.State) int {
 	data := lua.CheckString(l, 1)
-	lua.PushString(l, base64.StdEncoding.EncodeToString([]byte(data)))
+	l.PushString(base64.StdEncoding.EncodeToString([]byte(data)))
 	return 1
 }
 
@@ -32,6 +32,6 @@ func decode(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
 	}
-	lua.PushString(l, string(decoded))
+	l.PushString(string(decoded))
 	return 1
 }
