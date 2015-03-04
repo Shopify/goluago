@@ -3,7 +3,7 @@
 Lua wrappers for the Go standard library
 ========================================
 
-Wraps Go's standard libraries so they can be used with the [go-lua](github.com/Shopify/go-lua) Lua VM implementation.
+Wraps Go's standard libraries so they can be used with the [go-lua](https://github.com/Shopify/go-lua) Lua VM implementation.
 
 Most of the packages under `pkg` expose a single function `Open(l *lua.State)` that makes the corresponding Go package available to Lua scripts. For example:
 ```go
