@@ -18,6 +18,7 @@ var tests = []struct {
 	{"env", "env/env_test.lua"},
 	{"hmac", "crypto/hmac/hmac_test.lua"},
 	{"base64", "encoding/base64/base64_test.lua"},
+	{"uuid", "uuid/uuid_test.lua"},
 }
 
 func TestAllPackages(t *testing.T) {
