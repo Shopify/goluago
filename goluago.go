@@ -11,6 +11,7 @@ import (
 	"github.com/Shopify/goluago/pkg/regexp"
 	"github.com/Shopify/goluago/pkg/strings"
 	"github.com/Shopify/goluago/pkg/time"
+	"github.com/Shopify/goluago/pkg/uuid"
 	"github.com/Shopify/goluago/util"
 )
 
@@ -25,4 +26,5 @@ func Open(l *lua.State) {
 	hmac.Open(l)
 	base64.Open(l)
 	env.Open(l)
+	uuid.Open(l)
 }
