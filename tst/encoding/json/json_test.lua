@@ -1,9 +1,11 @@
-local json = require("goluago/encoding/json")
+local json = require "goluago/encoding/json"
 
 equals("unmarshal: can decode empty object", {}, json.unmarshal("{}"))
 equals("unmarshal: can decode empty array", {}, json.unmarshal("[]"))
 equals("unmarshal: can decode null", nil, json.unmarshal("null"))
 equals("unmarshal: can decode array with null", {nil}, json.unmarshal("[null]"))
+equals("marshal: can encode empty object", "{}", json.marshal({}))
+equals("marshal: can encode null", "null", json.marshal(nil))
 
 -- Valid case
 local payload = [=[
@@ -56,6 +58,7 @@ local want = {stuff="name='updates[1234]'", targetURL="http://127.0.0.1:7070/tar
 local got = json.unmarshal(payload)
 equals("unmarshal: can decode real use case JSON", want, got)
 istrue("unmarshal: true values should be true", got.complete)
+equals("marshal: can roundtrip real use case JSON", want, json.unmarshal(json.marshal(got)))
 
 -- Error case
 local trailingComma = [=[
