@@ -133,6 +133,8 @@ func pullArrayRec(l *lua.State, idx int) (interface{}, error) {
 func toGoValue(l *lua.State, idx int) (interface{}, error) {
 	t := l.TypeOf(idx)
 	switch t {
+	case lua.TypeBoolean:
+		return l.ToBoolean(idx), nil
 	case lua.TypeString:
 		return lua.CheckString(l, idx), nil
 	case lua.TypeNumber:
