@@ -1,7 +1,7 @@
 package uuid
 
 import (
-	"code.google.com/p/go-uuid/uuid"
+	"github.com/pborman/uuid"
 	"github.com/Shopify/go-lua"
 )
 
