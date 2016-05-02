@@ -1,0 +1,16 @@
+{
+	"ImportPath": "github.com/Shopify/goluago",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Shopify/go-lua",
+			"Rev": "e070da3ec8b0d36f41063f67fec918692bebc165"
+		},
+		{
+			"ImportPath": "github.com/pborman/uuid",
+			"Comment": "v1.0-11-gc55201b",
+			"Rev": "c55201b036063326c5b1b89ccfe45a184973d073"
+		}
+	]
+}

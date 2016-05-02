@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	luatesting "../pkg/testing"
+	luatesting "github.com/Shopify/goluago/pkg/testing"
 
 	"github.com/Shopify/go-lua"
 	"github.com/Shopify/goluago/util"

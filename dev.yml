@@ -1,0 +1,9 @@
+name: goluago
+
+up:
+  - go: 1.6.2
+
+commands:
+  test:
+    run: go get github.com/bradfitz/iter && go test ./...
+    desc: 'run unit tests'
