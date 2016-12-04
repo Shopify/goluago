@@ -19,6 +19,8 @@ func Open(l *lua.State) {
 
 var urlLibrary = []lua.RegistryFunction{
 	{"parse", parse},
+	{"escape", escape},
+	{"unescape", unescape},
 }
 
 func parse(l *lua.State) int {
@@ -133,4 +135,25 @@ func urlString(u *url.URL) lua.Function {
 		l.PushString(u.String())
 		return 1
 	}
+}
+
+func escape(l *lua.State) int {
+	query := lua.CheckString(l, 1)
+	escapedUrl := url.QueryEscape(query)
+
+	l.PushString(escapedUrl)
+	return 1
+}
+
+func unescape(l *lua.State) int {
+	query := lua.CheckString(l, 1)
+	url, err := url.QueryUnescape(query)
+
+	if err != nil {
+		lua.Errorf(l, err.Error())
+		panic("unreachable")
+	}
+
+	l.PushString(url)
+	return 1
 }
