@@ -1,0 +1,6 @@
+package: github.com/Shopify/goluago
+import:
+- package: github.com/Shopify/go-lua
+- package: github.com/pborman/uuid
+testImport:
+- package: github.com/bradfitz/iter

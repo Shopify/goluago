@@ -1,0 +1,10 @@
+hash: da3553a887294eada15d9a5976be753086e10ca23be224ec5527fb1e6d51d730
+updated: 2017-02-16T21:17:46.270089417-05:00
+imports:
+- name: github.com/pborman/uuid
+  version: c55201b036063326c5b1b89ccfe45a184973d073
+- name: github.com/Shopify/go-lua
+  version: 67c3ba03ce822db5f0b4305b83ac822a8bead28a
+testImports:
+- name: github.com/bradfitz/iter
+  version: 454541ec3da2a73fc34fd049b19ee5777bf19345
