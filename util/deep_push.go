@@ -2,8 +2,9 @@ package util
 
 import (
 	"fmt"
-	"github.com/Shopify/go-lua"
 	"reflect"
+
+	"github.com/Shopify/go-lua"
 )
 
 // DeepPush will put any basic Go type on the lua stack. If the value
@@ -108,6 +109,7 @@ func forwardOnReflect(l *lua.State, val interface{}) {
 // type of slice
 func recurseOnFuncSlice(l *lua.State, input func(int) interface{}, n int) {
 	l.CreateTable(n, 0)
+	luaArray(l)
 	for i := 0; i < n; i++ {
 		forwardOnType(l, input(i))
 		l.RawSetInt(-2, i+1)
