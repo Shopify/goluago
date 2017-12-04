@@ -8,7 +8,3 @@ up:
 commands:
   build: go build
   test:  go test ./...
-
-packages:
-  - git@github.com:Shopify/dev-shopify.git
-
