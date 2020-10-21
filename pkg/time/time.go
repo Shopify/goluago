@@ -16,9 +16,24 @@ func Open(l *lua.State) {
 
 var timeLibrary = []lua.RegistryFunction{
 	{"now", now},
+	{"nowUTC", nowUTC},
 	{"sleep", sleep},
 	{"since", since},
+	{"addTime", addTime}
 }
+
+func nowUTC(l *State) int {
+	l.PushString(time.Now().UTC().Format(time.RFC3339))
+	return 1
+}},
+
+{"addHourUTC", func(l *State) int{
+	start := lua.CheckInteger(l, 1)
+	hourToAdd := lua.CheckInteger(l, 2)
+	diff := start.Add(time.Hour * time.Duration(hourToAdd))
+	l.PushString(diff.Format(time.RFC3339))
+	return 1
+}},
 
 func sleep(l *lua.State) int {
 	ns := lua.CheckInteger(l, 1)
