@@ -32,7 +32,7 @@ func format(l *lua.State) int {
 		lua.Errorf(l, err.Error())
 	}
 
-	unixTime := time.Unix(epochNanoToFormat/1000000000, 0)
+	unixTime := time.Unix(epochNanoToFormat/1e9, 0)
 	timeInTimeZone := unixTime.In(loc)
 	l.PushString(timeInTimeZone.Format(layout))
 
