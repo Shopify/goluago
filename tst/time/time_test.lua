@@ -14,10 +14,11 @@ time.sleep(tenMicroSec)
 local diff = time.since(start)
 istrue("time: time since sleep must be bigger than sleep duration", diff > tenMicroSec)
 
-now := 1.257894e+18
-formattedTime := time.format(now, "2008-10-04T23:00:00Z")
-isEqual("time: format should be equal",  "2009-11-10T23:00:00Z", formattedTime)
+local now = 1.257894e+18
+local formattedTime = time.format(now, "2006-01-02T15:04:05Z", "")
+equals("time format should be equal", "2009-11-10T23:00:00Z", formattedTime)
 
-oneHrAdded := time.add(now, {"hour": 1})
-formattedOneHrLater := time.format(oneHrAdded, "2008-10-04T23:00:00Z")
-isEqual("time: format should be equal", "2009-11-11T00:00:00Z", formattedOneHrLater)
+local oneHrAdded = time.add(now, {hour= 1})
+local formattedTimeAhead = time.format(oneHrAdded, "2006-01-02T15:04:05Z", "")
+equals("time: added should be equal", 1.2578976e+18, oneHrAdded)
+equals("time format should be equal", "2009-11-11T00:00:00Z", formattedTimeAhead)
