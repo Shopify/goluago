@@ -170,7 +170,7 @@ var fromLuaRecTT = []struct {
 	{
 		want: map[string]interface{}{
 			"hello": "lelele",
-			"oh":    1234,
+			"oh":    float64(1234),
 			"foo": map[string]interface{}{
 				"go": "og",
 				"ruby": map[string]interface{}{

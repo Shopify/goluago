@@ -6,6 +6,7 @@ equals("unmarshal: can decode null", nil, json.unmarshal("null"))
 equals("unmarshal: can decode array with null", array({ nil }), json.unmarshal("[null]"))
 equals("marshal: can encode empty object", "{}", json.marshal({}))
 equals("marshal: can encode null", "null", json.marshal(nil))
+equals("marshal: can encode floats", "{\"foo\":1.01}", json.marshal({ foo = 1.01 }))
 
 -- Valid case
 local payload = [=[
