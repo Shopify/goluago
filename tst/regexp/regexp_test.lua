@@ -26,35 +26,35 @@ equals("find: can find match - absent","", r.find("meat"))
 
 -- re.findSubmatch
 local r = re.compile("a(x*)b(y|z)c")
-equals("findSubmatch: can find submatch",{"axxxbyc","xxx","y"},r.findSubmatch("-axxxbyc-"))
-equals("findSubmatch: can find submatch",{"abzc","","z"},r.findSubmatch("-abzc-"))
+equals("findSubmatch: can find submatch",array({"axxxbyc","xxx","y"}),r.findSubmatch("-axxxbyc-"))
+equals("findSubmatch: can find submatch",array({"abzc","","z"}),r.findSubmatch("-abzc-"))
 
 local pattern = re.quotemeta('name="updates[').."([0-9]+)"..re.quotemeta(']"')
 local r = re.compile(pattern)
-equals("findSubmatch: can find submatch",{'name="updates[1234]"',"1234"}, r.findSubmatch('name="updates[1234]"'))
+equals("findSubmatch: can find submatch",array({'name="updates[1234]"',"1234"}), r.findSubmatch('name="updates[1234]"'))
 
 -- re.findAll
 local r = re.compile("a.")
-equals("findAll: can find all matches", {"ar", "an", "al"}, r.findAll("paranormal", -1))
-equals("findAll: can find limited subset matches", {"ar", "an"}, r.findAll("paranormal", 2))
-equals("findAll: can find single match", {"aa"}, r.findAll("graal", -1))
-equals("findAll: doesn't find absent matches", {}, r.findAll("none", -1))
+equals("findAll: can find all matches", array({"ar", "an", "al"}), r.findAll("paranormal", -1))
+equals("findAll: can find limited subset matches", array({"ar", "an"}), r.findAll("paranormal", 2))
+equals("findAll: can find single match", array({"aa"}), r.findAll("graal", -1))
+equals("findAll: doesn't find absent matches", array({}), r.findAll("none", -1))
 
 -- re.findAllSubmatch
 local r = re.compile("a(x*)b")
 
-local want = {{"axxb","xx"}}
+local want = array({array({"axxb","xx"})})
 local got = r.findAllSubmatch("-axxb-", -1)
 equals("findAllSubmatch: unique subgroup", want, got)
 
-local want = {{"ab",""},{"axb","x"}}
+local want = array({array({"ab",""}), array({"axb","x"})})
 local got = r.findAllSubmatch("-ab-axb-", -1)
 equals("findAllSubmatch: many subgroups", want, got)
 
-local want = {{"ab",""}}
+local want = array({array({"ab",""})})
 local got = r.findAllSubmatch("-ab-", -1)
 equals("findAllSubmatch: unique subgroup w/ empty string", want, got)
 
-local want = {{"axxb","xx"},{"ab",""}}
+local want = array({array({"axxb","xx"}), array({"ab",""})})
 local got = r.findAllSubmatch("-axxb-ab-", -1)
 equals("findAllSubmatch: many subgroup w/ empty string", want, got)

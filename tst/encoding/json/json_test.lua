@@ -1,9 +1,9 @@
 local json = require "goluago/encoding/json"
 
 equals("unmarshal: can decode empty object", {}, json.unmarshal("{}"))
-equals("unmarshal: can decode empty array", {}, json.unmarshal("[]"))
+equals("unmarshal: can decode empty array", array({}), json.unmarshal("[]"))
 equals("unmarshal: can decode null", nil, json.unmarshal("null"))
-equals("unmarshal: can decode array with null", {nil}, json.unmarshal("[null]"))
+equals("unmarshal: can decode array with null", array({ nil }), json.unmarshal("[null]"))
 equals("marshal: can encode empty object", "{}", json.marshal({}))
 equals("marshal: can encode null", "null", json.marshal(nil))
 
@@ -32,17 +32,17 @@ local payload = [=[
 local want = {}
 want["key1"]=1
 want["key2"]="val2"
-want["key3"]={"arrKey", 2, true, false, {}, {}}
+want["key3"]=array({"arrKey", 2, true, false, {}, array({})})
 want["key4"]={}
 want["key4"]["subkey1"]=1
 want["key4"]["subkey2"]="val2"
-want["key4"]["subkey3"]={"arrKey", 2, true, false, {}, {}}
+want["key4"]["subkey3"]=array({"arrKey", 2, true, false, {}, array({})})
 want["key4"]["subkey4"]={}
 want["key4"]["subkey4"]["subsubkey1"]=1
 want["key4"]["subkey4"]["subsubkey2"]="val2"
-want["key4"]["subkey4"]["subsubkey3"]={"arrKey", 2, true, false, {}, {}}
+want["key4"]["subkey4"]["subsubkey3"]=array({"arrKey", 2, true, false, {}, array({})})
 want["key5"]=nil
-want["key6"]={1, nil, 2, nil}
+want["key6"]=array({1, nil, 2, nil})
 want["key7"]=true
 
 equals("unmarshal: can decode sample JSON", want, json.unmarshal(payload))
