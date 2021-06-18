@@ -1,9 +1,12 @@
 package time
 
 import (
-	"github.com/Shopify/go-lua"
 	"time"
+
+	"github.com/Shopify/go-lua"
 )
+
+const ISO8601_FORMAT = `2006-01-02T15:04:05-07:00`
 
 func Open(l *lua.State) {
 	timeOpen := func(l *lua.State) int {
@@ -20,6 +23,8 @@ var timeLibrary = []lua.RegistryFunction{
 	{"sleep", sleep},
 	{"since", since},
 	{"add", add},
+	{"parse", parse},
+	{"parseISO", parseISO},
 }
 
 func format(l *lua.State) int {
@@ -72,5 +77,30 @@ func since(l *lua.State) int {
 	start := lua.CheckNumber(l, 1)
 	diff := float64(time.Now().UnixNano()) - start
 	l.PushNumber(diff)
+	return 1
+}
+
+func parse(l *lua.State) int {
+	format := lua.CheckString(l, 1)
+	value := lua.CheckString(l, 2)
+
+	return parseTime(l, format, value)
+}
+
+func parseISO(l *lua.State) int {
+	value := lua.CheckString(l, 1)
+
+	return parseTime(l, ISO8601_FORMAT, value)
+}
+
+func parseTime(l *lua.State, format, value string) int {
+	t, err := time.Parse(format, value)
+
+	if err != nil {
+		lua.Errorf(l, err.Error())
+	}
+
+	l.PushNumber(float64(t.UnixNano()))
+
 	return 1
 }
