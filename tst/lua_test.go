@@ -20,6 +20,7 @@ var tests = []struct {
 	{"base64", "encoding/base64/base64_test.lua"},
 	{"uuid", "uuid/uuid_test.lua"},
 	{"hex", "encoding/hex/hex_test.lua"},
+	{"sha256", "crypto/sha256/sha256_test.lua"},
 }
 
 func TestAllPackages(t *testing.T) {
