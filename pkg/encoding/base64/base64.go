@@ -17,6 +17,8 @@ func Open(l *lua.State) {
 var base64Library = []lua.RegistryFunction{
 	{"encode", encode},
 	{"decode", decode},
+	{"urlEncode", urlEncode},
+	{"urlDecode", urlDecode},
 }
 
 func encode(l *lua.State) int {
@@ -28,6 +30,23 @@ func encode(l *lua.State) int {
 func decode(l *lua.State) int {
 	data := lua.CheckString(l, 1)
 	decoded, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		lua.Errorf(l, err.Error())
+		panic("unreachable")
+	}
+	l.PushString(string(decoded))
+	return 1
+}
+
+func urlEncode(l *lua.State) int {
+	data := lua.CheckString(l, 1)
+	l.PushString(base64.RawURLEncoding.EncodeToString([]byte(data)))
+	return 1
+}
+
+func urlDecode(l *lua.State) int {
+	data := lua.CheckString(l, 1)
+	decoded, err := base64.RawURLEncoding.DecodeString(data)
 	if err != nil {
 		lua.Errorf(l, err.Error())
 		panic("unreachable")
