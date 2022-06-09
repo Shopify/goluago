@@ -20,6 +20,7 @@ func Open(l *lua.State) {
 var timeLibrary = []lua.RegistryFunction{
 	{"now", now},
 	{"format", format},
+	{"formatISO", formatISO},
 	{"sleep", sleep},
 	{"since", since},
 	{"add", add},
@@ -44,6 +45,22 @@ func format(l *lua.State) int {
 	return 1
 }
 
+func formatISO(l *lua.State) int {
+	epochNanoToFormat := int64(lua.CheckNumber(l, 1))
+	zone := lua.OptString(l, 2, "")
+
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		lua.Errorf(l, err.Error())
+	}
+
+	unixTime := time.Unix(epochNanoToFormat/1e9, 0)
+	timeInTimeZone := unixTime.In(loc)
+	l.PushString(timeInTimeZone.Format(ISO8601_FORMAT))
+
+	return 1
+}
+
 func add(l *lua.State) int {
 	start := int64(lua.CheckNumber(l, 1))
 	startUnix := time.Unix(0, start)
@@ -57,7 +74,7 @@ func add(l *lua.State) int {
 	hour := lua.OptInteger(l, -3, 0)
 	l.Pop(3)
 
-	inc := startUnix.Add(time.Hour * time.Duration(hour) + time.Minute * time.Duration(minute) + time.Second * time.Duration(second))
+	inc := startUnix.Add(time.Hour*time.Duration(hour) + time.Minute*time.Duration(minute) + time.Second*time.Duration(second))
 	l.PushNumber(float64(inc.UnixNano()))
 	return 1
 }
