@@ -20,6 +20,7 @@ func Open(l *lua.State) {
 var timeLibrary = []lua.RegistryFunction{
 	{"now", now},
 	{"format", format},
+	{"formatISO", formatISO},
 	{"sleep", sleep},
 	{"since", since},
 	{"add", add},
@@ -40,6 +41,22 @@ func format(l *lua.State) int {
 	unixTime := time.Unix(epochNanoToFormat/1e9, 0)
 	timeInTimeZone := unixTime.In(loc)
 	l.PushString(timeInTimeZone.Format(layout))
+
+	return 1
+}
+
+func formatISO(l *lua.State) int {
+	epochNanoToFormat := int64(lua.CheckNumber(l, 1))
+	zone := lua.OptString(l, 2, "")
+
+	loc, err := time.LoadLocation(zone)
+	if err != nil {
+		lua.Errorf(l, err.Error())
+	}
+
+	unixTime := time.Unix(epochNanoToFormat/1e9, 0)
+	timeInTimeZone := unixTime.In(loc)
+	l.PushString(timeInTimeZone.Format(ISO8601_FORMAT))
 
 	return 1
 }
