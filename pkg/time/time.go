@@ -74,7 +74,7 @@ func add(l *lua.State) int {
 	hour := lua.OptInteger(l, -3, 0)
 	l.Pop(3)
 
-	inc := startUnix.Add(time.Hour*time.Duration(hour) + time.Minute*time.Duration(minute) + time.Second*time.Duration(second))
+	inc := startUnix.Add(time.Hour * time.Duration(hour) + time.Minute * time.Duration(minute) + time.Second * time.Duration(second))
 	l.PushNumber(float64(inc.UnixNano()))
 	return 1
 }
