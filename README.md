@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/Shopify/goluago?status.png)](https://godoc.org/github.com/Shopify/goluago)
+[![GoDoc](https://godoc.org/github.com/Shopify/goluago?status.svg)](https://godoc.org/github.com/Shopify/goluago)
 
 Lua wrappers for the Go standard library
 ========================================
