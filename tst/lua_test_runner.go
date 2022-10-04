@@ -1,9 +1,10 @@
 package tst
 
 import (
-	"github.com/Shopify/go-lua"
 	"reflect"
 	"testing"
+
+	"github.com/Shopify/go-lua"
 
 	luatesting "github.com/Shopify/goluago/pkg/testing"
 )
