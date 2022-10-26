@@ -13,6 +13,14 @@ equals(
   "compute hmac with sha256 and empty message",
   "\43\144\206\61\144\91\186\34\107\61\1\135\87\7\27\42\131\151\216\228\45\157\61\187\150\156\150\173\132\85\221\186",
   hmac.signsha256("", "foobar"))
+equals(
+  "compute hmac with sha256 and multiple messages",
+  "O\xCC\x06\x91[C\xD8\xA4\x9A\xFF\x194A\xE9\xE1\x86T\xE6\xA2|,B\x8B\x02\xE8\xFC\xC4\x1C\xCC\"\x99\xF9",
+  hmac.signsha256_multi(array({ "foo", "bar" }), "secret"))
+equals(
+  "compute hmac with sha256 and multiple messages and empty secret",
+  "\xD7\xAF\x9A\xC40\x19\xEBt\xB1x{\xC2,\xC8\xE8\x17\x91\x04_H\xA9K3M\xAB\x1AT!<O\xC6\t",
+  hmac.signsha256_multi(array({ "foo", "bar" }), ""))
 
 --sha1
 equals(

@@ -302,3 +302,70 @@ func TestPullTableFailsGracefullyOnUnconvertableValues(t *testing.T) {
 		t.Fatalf("should not be able to convert closure")
 	}
 }
+
+func TestPullStringArrayFromLua(t *testing.T) {
+	require := func(l *lua.State) {
+		util.Open(l)
+		l.Register("validateStringArray", func(l *lua.State) int {
+			actual, err := util.PullStringArray(l, -1)
+			if err != nil {
+				t.Fatalf("failed to pull string array: %s", err.Error())
+			}
+
+			expected := []string{ "foo", "bar" }
+			if !reflect.DeepEqual(expected, actual) {
+				t.Fatalf("expected %v, actual %v", expected, actual)
+			}
+
+			return 0
+		})
+	}
+	luatesting.RunLuaTestString(t, require, `
+		validateStringArray(array({"foo", "bar"}))
+	`)
+}
+
+func TestPullStringArrayFailsWhenNotATable(t *testing.T) {
+	l := lua.NewState()
+
+	l.PushString("not a table")
+	_, err := util.PullStringArray(l, l.Top())
+
+	if err == nil {
+		t.Fatalf("strings should not be convertible to string arrays")
+	}
+}
+
+func TestPullStringArrayFromLuaFailsWhenATableButNotArray(t *testing.T) {
+	require := func(l *lua.State) {
+		util.Open(l)
+		l.Register("validateStringArray", func(l *lua.State) int {
+			_, err := util.PullStringArray(l, -1)
+			if err == nil {
+				t.Fatalf("non-array tables should not be convertible to string arrays")
+			}
+
+			return 0
+		})
+	}
+	luatesting.RunLuaTestString(t, require, `
+		validateStringArray({ foo = "bar" })
+	`)
+}
+
+func TestPullStringArrayFromLuaFailsWhenANonStringArray(t *testing.T) {
+	require := func(l *lua.State) {
+		util.Open(l)
+		l.Register("validateStringArray", func(l *lua.State) int {
+			_, err := util.PullStringArray(l, -1)
+			if err == nil {
+				t.Fatalf("non-string arrays should not be convertible to string arrays")
+			}
+
+			return 0
+		})
+	}
+	luatesting.RunLuaTestString(t, require, `
+		validateStringArray(array({ "foo", array({}) }))
+	`)
+}

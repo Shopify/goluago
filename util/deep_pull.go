@@ -47,6 +47,34 @@ func PullTable(l *lua.State, idx int) (interface{}, error) {
 	return pullTableRec(l, idx)
 }
 
+func PullStringArray(l *lua.State, idx int) ([]string, error) {
+	if !isArray(l, idx) {
+		return nil, fmt.Errorf("need an array at index %d, got %s", idx, lua.TypeNameOf(l, idx))
+	}
+
+	idx = l.AbsIndex(idx)
+
+	table := make([]string, lua.LengthEx(l, idx))
+
+	l.PushNil()
+	for l.Next(idx) {
+		k, ok := l.ToInteger(-2)
+		if !ok {
+			l.Pop(2)
+			return nil, fmt.Errorf("pull array: expected numeric index, got '%s'", l.TypeOf(-2))
+		}
+		v, ok := l.ToString(-1)
+		if !ok {
+			return nil, fmt.Errorf("value for key '%d' should be a string (%v)", k, l.ToValue(-1))
+		}
+
+		table[k-1] = v
+		l.Pop(1)
+	}
+
+	return table, nil
+}
+
 func pullTableRec(l *lua.State, idx int) (interface{}, error) {
 	if !l.CheckStack(2) {
 		return nil, errors.New("pull table, stack exhausted")
