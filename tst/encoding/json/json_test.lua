@@ -61,6 +61,17 @@ equals("unmarshal: can decode real use case JSON", want, got)
 istrue("unmarshal: true values should be true", got.complete)
 equals("marshal: can roundtrip real use case JSON", want, json.unmarshal(json.marshal(got)))
 
+-- Test indented output
+local input = {foo = 1 }
+local expected_output = [[{
+  "foo": 1
+}]]
+
+local actual_output = json.marshal(input, 2)
+
+equals("marshal: can encode indented JSON", expected_output, actual_output)
+
+
 -- Error case
 local trailingComma = [=[
 {

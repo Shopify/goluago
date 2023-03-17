@@ -2,6 +2,7 @@ package json
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/Shopify/go-lua"
 	"github.com/Shopify/goluago/util"
@@ -31,11 +32,21 @@ func check(l *lua.State, err error) {
 func marshal(l *lua.State) int {
 	var t interface{}
 	var err error
+	var b []byte
+
 	if !l.IsNil(1) {
 		t, err = util.PullTable(l, 1)
 		check(l, err)
 	}
-	b, err := json.Marshal(t)
+
+	indent := lua.OptInteger(l, 2, 0)
+
+	if indent == 0 {
+		b, err = json.Marshal(t)
+	} else {
+		b, err = json.MarshalIndent(t, "", strings.Repeat(" ", indent))
+	}
+
 	check(l, err)
 	l.PushString(string(b))
 	return 1
