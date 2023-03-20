@@ -1,7 +1,7 @@
-local sha256 = require("goluago/crypto/md5")
+local md5 = require("goluago/crypto/md5")
 
 equals(
   "go-lua-go md5 string",
-  "b0dec8aeb0ab1bef807bb7fa5bde5792",
-  md5.sum(b0dec8aeb0ab1bef807bb7fa5bde5792)
+  "b0804ec967f48520697662a204f5fe72",
+  md5.sum("These pretzels are making me thirsty.")
 )

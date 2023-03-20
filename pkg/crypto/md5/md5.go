@@ -12,7 +12,7 @@ func Open(l *lua.State) {
 		lua.NewLibrary(l, md5Library)
 		return 1
 	}
-	lua.Require(l, "goluago/encoding/md5", md5Open, false)
+	lua.Require(l, "goluago/crypto/md5", md5Open, false)
 	l.Pop(1)
 }
 
