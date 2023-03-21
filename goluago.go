@@ -4,6 +4,7 @@ import (
 	"github.com/Shopify/go-lua"
 	"github.com/Shopify/goluago/pkg/crypto/aes"
 	"github.com/Shopify/goluago/pkg/crypto/hmac"
+	"github.com/Shopify/goluago/pkg/crypto/md5"
 	"github.com/Shopify/goluago/pkg/crypto/sha256"
 	"github.com/Shopify/goluago/pkg/encoding/base64"
 	"github.com/Shopify/goluago/pkg/encoding/hex"
@@ -33,4 +34,5 @@ func Open(l *lua.State) {
 	hex.Open(l)
 	sha256.Open(l)
 	aes.Open(l)
+	md5.Open(l)
 }

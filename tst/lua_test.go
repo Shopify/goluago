@@ -1,8 +1,9 @@
 package tst
 
 import (
-	"github.com/Shopify/goluago"
 	"testing"
+
+	"github.com/Shopify/goluago"
 )
 
 var tests = []struct {
@@ -22,6 +23,7 @@ var tests = []struct {
 	{"hex", "encoding/hex/hex_test.lua"},
 	{"sha256", "crypto/sha256/sha256_test.lua"},
 	{"aes", "crypto/aes/aes_test.lua"},
+	{"md5", "crypto/md5/md5_test.lua"},
 }
 
 func TestAllPackages(t *testing.T) {
