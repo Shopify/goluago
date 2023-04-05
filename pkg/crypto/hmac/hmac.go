@@ -16,8 +16,6 @@ func Open(l *lua.State) {
 	}
 	lua.Require(l, "goluago/crypto/hmac", hmacOpen, false)
 	l.Pop(1)
-	lua.Require(l, "goluago.crypto.hmac", hmacOpen, false)
-	l.Pop(1)
 }
 
 var hmacLibrary = []lua.RegistryFunction{
