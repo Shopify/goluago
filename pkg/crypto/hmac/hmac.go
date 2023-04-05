@@ -15,6 +15,7 @@ func Open(l *lua.State) {
 		return 1
 	}
 	lua.Require(l, "goluago/crypto/hmac", hmacOpen, false)
+	l.Pop(1)
 	lua.Require(l, "goluago.crypto.hmac", hmacOpen, false)
 	l.Pop(1)
 }
