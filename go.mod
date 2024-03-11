@@ -1,6 +1,6 @@
 module github.com/Shopify/goluago
 
-go 1.19
+go 1.22
 
 require (
 	github.com/Shopify/go-lua v0.0.0-20170207013001-67c3ba03ce82
