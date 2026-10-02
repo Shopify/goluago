@@ -107,7 +107,7 @@ func isArray(l *lua.State, idx int) bool {
 }
 
 func pullArrayRec(l *lua.State, idx int) (interface{}, error) {
-	table := make([]interface{}, lua.LengthEx(l, idx))
+	table := make([]interface{}, l.RawLength(idx))
 
 	l.PushNil()
 	for l.Next(idx) {
@@ -115,6 +115,11 @@ func pullArrayRec(l *lua.State, idx int) (interface{}, error) {
 		if !ok {
 			l.Pop(2)
 			return nil, fmt.Errorf("pull array: expected numeric index, got '%s'", l.TypeOf(-2))
+		}
+
+		if k < 1 || k > len(table) {
+			l.Pop(2)
+			return nil, fmt.Errorf("pull array: index %d out of bounds for array of length %d", k, len(table))
 		}
 
 		v, err := toGoValue(l, -1)

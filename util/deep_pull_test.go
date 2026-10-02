@@ -302,3 +302,55 @@ func TestPullTableFailsGracefullyOnUnconvertableValues(t *testing.T) {
 		t.Fatalf("should not be able to convert closure")
 	}
 }
+
+func TestPullTableFailsGracefullyOnOutOfBoundsArrayIndices(t *testing.T) {
+	for _, code := range []string{
+		`local a = array({}); a[0] = "x"; pullTable(a)`,
+		`local a = array({}); a[-3] = "x"; pullTable(a)`,
+		`local a = array({}); a[5] = "x"; pullTable(a)`,
+		`local a = array({}); a["0"] = "x"; pullTable(a)`,
+		`local a = array({}); a[0.5] = "x"; pullTable(a)`,
+		`local a = array({}); a[1e300] = "x"; pullTable(a)`,
+		`pullTable({ nested = array({ [0] = "x" }) })`,
+	} {
+		var err error
+		require := func(l *lua.State) {
+			util.Open(l)
+			l.Register("pullTable", func(l *lua.State) int {
+				_, err = util.PullTable(l, 1)
+				return 0
+			})
+		}
+		luatesting.RunLuaTestString(t, require, code)
+
+		if err == nil {
+			t.Errorf("expected an out of bounds error for %q", code)
+		}
+	}
+}
+
+func TestPullTableIgnoresArrayLengthMetamethod(t *testing.T) {
+	for _, length := range []string{"-1", "0", "1", "2^50"} {
+		var got interface{}
+		var err error
+		require := func(l *lua.State) {
+			util.Open(l)
+			l.Register("pullTable", func(l *lua.State) int {
+				got, err = util.PullTable(l, 1)
+				return 0
+			})
+		}
+		luatesting.RunLuaTestString(t, require, `
+			local a = array({"x", "y"})
+			getmetatable(a).__len = function() return `+length+` end
+			pullTable(a)
+		`)
+
+		if err != nil {
+			t.Fatalf("pulling table with __len returning %s, %v", length, err)
+		}
+		if want := []interface{}{"x", "y"}; !reflect.DeepEqual(want, got) {
+			t.Errorf("__len returning %s: expected %v, got %v", length, want, got)
+		}
+	}
+}
