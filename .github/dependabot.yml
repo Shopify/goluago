@@ -8,3 +8,9 @@ updates:
     timezone: America/New_York
   open-pull-requests-limit: 100
   registries: "*"
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "10:00"
+    timezone: America/New_York
