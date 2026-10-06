@@ -5,6 +5,7 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"bytes"
+	"errors"
 	"github.com/Shopify/go-lua"
 	"io"
 )
@@ -60,14 +61,24 @@ func decryptCBC(l *lua.State) int {
 		panic("unreachable")
 	}
 
+	if len(ciphertext) < 2*aes.BlockSize || len(ciphertext)%aes.BlockSize != 0 {
+		lua.Errorf(l, "invalid ciphertext length")
+		panic("unreachable")
+	}
+
 	iv := ciphertext[:aes.BlockSize]
 	ciphertext = ciphertext[aes.BlockSize:]
 
 	decrypter := cipher.NewCBCDecrypter(block, iv)
 	decrypter.CryptBlocks(ciphertext, ciphertext)
 
+	plaintext, err := PKCS7UnPadding(ciphertext, aes.BlockSize)
+	if err != nil {
+		lua.Errorf(l, err.Error())
+		panic("unreachable")
+	}
 
-	l.PushString(string(PKCS5UnPadding(ciphertext)))
+	l.PushString(string(plaintext))
 
 	return 1
 }
@@ -78,8 +89,32 @@ func PKCS5Padding(ciphertext []byte, blockSize int, after int) []byte {
 	return append(ciphertext, padding...)
 }
 
+// PKCS5UnPadding strips padding without validating it, so malformed input
+// (such as the output of decrypting with the wrong key) returns garbage or
+// panics.
+//
+// Deprecated: Use PKCS7UnPadding, which returns an error for invalid padding.
 func PKCS5UnPadding(src []byte) []byte {
 	src_length := len(src)
 	padding_length := int(src[src_length-1])
 	return src[:(src_length - padding_length)]
+}
+
+// PKCS7UnPadding rejects malformed padding instead of slicing on whatever the
+// last byte says, which is what decrypting with the wrong key produces.
+func PKCS7UnPadding(src []byte, blockSize int) ([]byte, error) {
+	srcLength := len(src)
+	if srcLength == 0 {
+		return nil, errors.New("invalid padding")
+	}
+	paddingLength := int(src[srcLength-1])
+	if paddingLength == 0 || paddingLength > blockSize || paddingLength > srcLength {
+		return nil, errors.New("invalid padding")
+	}
+	for _, b := range src[srcLength-paddingLength:] {
+		if int(b) != paddingLength {
+			return nil, errors.New("invalid padding")
+		}
+	}
+	return src[:srcLength-paddingLength], nil
 }
